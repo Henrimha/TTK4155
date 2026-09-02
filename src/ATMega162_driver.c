@@ -1,72 +1,54 @@
-#include 
 #include <avr/io.h>
+#include <ATMega162_driver.h>
 
 
 void USART_Init( unsigned int ubrr )
 {
 /* Set baud rate */
-UBRRH = (unsigned char)(ubrr>>8);
-UBRRL = (unsigned char)ubrr;
+UBRR0H = (unsigned char)(ubrr>>8);
+UBRR0L = (unsigned char)ubrr;
 /* Enable receiver and transmitter */
-UCSRB = (1<<RXEN)|(1<<TXEN);
+UCSR0B = (1<<RXEN0)|(1<<TXEN0);
 /* Set frame format: 8data, 2stop bit */
-UCSRC = (1<<URSEL)|(1<<USBS)|(3<<UCSZ0);
+UCSR0C = (1<<URSEL0)|(1<<USBS0)|(3<<UCSZ00);
 } //copied from ATmega162 datasheet, page 172
 
 //assumes 8 bit data
 void USART_Transmit( unsigned char data )
 {
 /* Wait for empty transmit buffer */
-while ( !( UCSRA & (1<<UDRE)) )
-;
+while ( !( UCSR0A & (1<<UDRE0)) ); // stopper når begge er høye
 /* Put data into buffer, sends the data */
-UDR = data;
+UDR0 = data;
 } //kopert fra ATmega162 datasheet s 173
 
-//Assumes 9 bit data
 /*
-void USART_Transmit( unsigned int data )
-{
-// Wait for empty transmit buffer 
-while ( !( UCSRA & (1<<UDRE)) )
-;
-// Copy 9th bit to TXB8 
-UCSRB &= ~(1<<TXB8);
-if ( data & 0x0100 )
-UCSRB |= (1<<TXB8);
-// Put data into buffer, sends the data 
-UDR = data;
-}*/
+sett inn i txd-registeret
+indikere at reigisteret er fullt
+vente mens vi sender
+når sendt indikere at registeret er tomt
+klar til nye sendinger
+
+to flagg for tilstand, UDRE og TXC
+UDRE: indikerer om bufferet er klart for å motta data
+bittet settes når transmitregistert er tomt (1 = tomt/klar, 0 = fullt)
+alltid skriv til 0 når man bruker UCSRA-registeret
+TXC: er en bit i UCSR0A-registeret
+
+*/
 
 //TODO: can use UDRE, Usart data register empty and TXC transmit complete to generate interrupts
 
 unsigned char USART_Receive( void )
 {
 /* Wait for data to be received */
-while ( !(UCSRA & (1<<RXC)) )
+while ( !(UCSR0A & (1<<RXC0)) )
 ;
 /* Get and return received data from buffer */
-return UDR;
+return UDR0;
 }//s176
 
-/*unsigned int USART_Receive( void )
-{
-unsigned char status, resh, resl;
-// Wait for data to be received 
-while ( !(UCSRA & (1<<RXC)) )
-;
-// Get status and 9th bit, then data 
-// from buffer
-status = UCSRA;
-resh = UCSRB;
-resl = UDR;
-// If error, return -1 
-if ( status & (1<<FE)|(1<<DOR)|(1<<UPE) )
-return -1;
-// Filter the 9th bit, then return 
-resh = (resh >> 1) & 0x01;
-return ((resh << 8) | resl);
-} //s177*/
+
 
 //recieve complete, RXC, is a flag that indicates that there are unread data present in the recieve buffer. Active high, 1 is data, 0 is no data
 
