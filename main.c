@@ -13,9 +13,9 @@
 
 int main(void) {
     fdevopen( USART_put, USART_get);
-    //firkantpuls();
+    firkantpuls();
     USART_Init(MYUBRR);
-    usart_transmit_polling('a');
+    //usart_transmit_polling('a');
    
 
     //PORTA &= ~(1 << PA0);
