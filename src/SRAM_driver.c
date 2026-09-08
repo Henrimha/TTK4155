@@ -15,3 +15,5 @@ void external_memory_init (){
 // PC3 = A_10
 
 // Sjekk om PC3 ==0 eller 1. Hvis 1 gå til SRAM hvis 0 gå til ADC.
+
+// hvis ADC har aktiv høy CS må signalet gjennom NAND før til chip select.
