@@ -4,6 +4,9 @@
 #include <tests/usart_polling.h>
 #include <stdio.h>
 #include <ATMega162_driver.h>
+#include <tests/sram_test.h>
+#include <SRAM_driver.h>
+
 // #define FOSC 1843200// Clock Speed
 #define FOSC 4915200UL// Clock Speed
 
@@ -12,10 +15,12 @@
 
 
 int main(void) {
-    fdevopen( USART_put, USART_get);
-    firkantpuls();
+    fdevopen(USART_put, USART_get);
+    // // firkantpuls();
     USART_Init(MYUBRR);
-    //usart_transmit_polling('a');
+    external_memory_init();
+    // usart_transmit_polling('a');
+    SRAM_test();
    
 
     //PORTA &= ~(1 << PA0);
@@ -28,3 +33,22 @@ int main(void) {
 
 // kortslutt
 // finn parity og stopbits til usart 
+
+
+
+// LATCH
+// PE1 = ALE som skal inn i LE på latchen
+// LE er høy => outputs Q = data inputs på D
+// LE lav => outputs Q = det som er lagra (ikke på D)
+// OE høy => High impedance Q, sender ingenting
+// OE lav => fungerer som normalt
+
+// SRAM
+// Har 8K adresser. ATmega har 64K adresser. Begge har registerstørrelse på 8 bits
+// PA0-PA7 skal inn i LATCH D-porter
+// PC0-PC7 skal inn i SRAM. bruker PC4-PC7 til JTAG
+    // kan ikke bruke 16 bit til adresse => 12 bits isedet
+// PD6 er write signal. WE lav => skriv data. WE høy => Output disabled/Read data
+// PD7 er read signal. OE (output enable) lav => les data. OE høy => output disabled
+// A_0-A_12 er adressebits. A_12 brukes ikke, må groundes
+// I/O_0-I/O_7 er data input/output

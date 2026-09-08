@@ -5,7 +5,7 @@ void usart_transmit_polling(unsigned char c){
     char a='b';
     while (1){
         
-            USART_Transmit(c);
+            // USART_Transmit(c);
             _delay_ms(100);
             printf("hello world ");
             while (a!='a'){
