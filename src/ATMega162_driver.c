@@ -16,7 +16,7 @@ UCSR0C = (1<<URSEL0)|(0<<UMSEL0)|(1<<USBS0)|(1<<UPM01)|(0<<UPM00)|(1<<USBS0)|(3<
 
 /*
 Finne f_osc pga UBRR0H 
-U2X = 1 eller 0??
+U2X = 1 eller 0?? bleeleel
 Sette riktig baud rate (9600) 
 Sett inn riktig UBRR0H og UBRR0L
 */

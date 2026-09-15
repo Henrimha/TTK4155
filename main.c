@@ -6,6 +6,7 @@
 #include <ATMega162_driver.h>
 #include <tests/sram_test.h>
 #include <SRAM_driver.h>
+#include <ADC_driver.h>
 
 // #define FOSC 1843200// Clock Speed
 #define FOSC 4915200UL// Clock Speed
@@ -18,9 +19,14 @@ int main(void) {
     fdevopen(USART_put, USART_get);
     // // firkantpuls();
     USART_Init(MYUBRR);
+    ADC_init();
     external_memory_init();
-    // usart_transmit_polling('a');
-    SRAM_test();
+   
+    while (1){
+        sample fine=ADC_sample();
+        _delay_ms(100);
+    }
+    //usart_transmit_polling('a');
    
 
     //PORTA &= ~(1 << PA0);
@@ -34,7 +40,19 @@ int main(void) {
 // kortslutt
 // finn parity og stopbits til usart 
 
+// 1. Lag klokkesignal
+//2. Bli 100% sikker på at ingeting må initsialiseres på ADC Tror at analoget signale tar alle samtidig. HVa skjer når Read=1 
+// 3. Dobbeltsjekke at de analogesignalene sendes til riktig sted. 
+//4. Funksjonene med Busy og fire read og eller write. 
 
+
+//4. Kalibrer 
+
+
+
+// sjekke om klokkesignal generator funker, hvis ikke spr chat
+// lag funskjoner som henter ut data eller sampler fra joystick ting
+//print verdiene til skjerm
 
 // LATCH
 // PE1 = ALE som skal inn i LE på latchen
@@ -52,3 +70,8 @@ int main(void) {
 // PD7 er read signal. OE (output enable) lav => les data. OE høy => output disabled
 // A_0-A_12 er adressebits. A_12 brukes ikke, må groundes
 // I/O_0-I/O_7 er data input/output
+
+
+
+// ocrna er min 0x0003 (2 bits)
+// tcntn 
