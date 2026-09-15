@@ -12,11 +12,13 @@ void ADC_init(){
 }
 // 200 mikrosekunder
 sample ADC_sample(){
-    volatile char *ADC=(char*)0x004;
+    volatile uint8_t *ADC=(uint8_t*)0x1000;
     ADC[0]=1; // Write/sample
 
-    _delay_ms(10);
-
+    
+    while (PORTD & (1<<PD4)){ // fiks løkka
+        
+    } // Wait for the toggle to go low, indicating that the sample is done
     volatile sample value;
     value.joystick_x = ADC[0];
     value.joystick_y = ADC[0];
