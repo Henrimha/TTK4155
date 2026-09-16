@@ -1,10 +1,10 @@
 #include "utils.h"
 
 typedef struct {
-    char joystick_x;
-    char joystick_y;
-    char touch_x;
-    char touch_y;
+    unsigned char joystick_x;
+    unsigned char joystick_y;
+    unsigned char touch_x;
+    unsigned char touch_y;
 } sample;
 
 void ADC_init();

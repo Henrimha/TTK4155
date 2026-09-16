@@ -24,7 +24,7 @@ int main(void) {
    
     while (1){
         sample fine=ADC_sample();
-        _delay_ms(100);
+        _delay_ms(800);
     }
     //usart_transmit_polling('a');
    
