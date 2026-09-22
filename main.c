@@ -7,6 +7,7 @@
 #include <tests/sram_test.h>
 #include <SRAM_driver.h>
 #include <ADC_driver.h>
+#include <tests/ADC_test.h>
 
 // #define FOSC 1843200// Clock Speed
 #define FOSC 4915200UL// Clock Speed
@@ -21,11 +22,8 @@ int main(void) {
     USART_Init(MYUBRR);
     ADC_init();
     external_memory_init();
-   
-    while (1){
-        sample fine=ADC_sample();
-        _delay_ms(800);
-    }
+    SRAM_test();
+    //ADC_test();
     //usart_transmit_polling('a');
    
 

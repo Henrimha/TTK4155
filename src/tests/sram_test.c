@@ -5,7 +5,7 @@ void SRAM_test(void)
 {
     volatile char *ext_ram = (char *)0x1400; // Start address for the SRAM 1800 
 
-    uint16_t ext_ram_size = 0xC00; //800
+    uint16_t ext_ram_size = 0xC00; //1200, 800 før
     uint16_t write_errors = 0;
     uint16_t retrieval_errors = 0;
 
@@ -31,6 +31,7 @@ void SRAM_test(void)
             printf("Write phase error: ext_ram[%4d] = %02X (should be %02X)\n", i, retrieved_value, some_value);
             write_errors++;
         }
+
     }
 
     // Retrieval phase:

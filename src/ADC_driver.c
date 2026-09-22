@@ -15,25 +15,6 @@ void ADC_init(){
 // 200 mikrosekunder
 sample ADC_sample(){
     volatile uint8_t *ADC=(uint8_t*)0x1000;
-    /*while (1){
-    ADC[0]=1; // Write/sample
-    _delay_ms(0.5);
-    char temp=ADC[0];
-    _delay_ms(0.01);
-    temp=ADC[0];
-    _delay_ms(0.01);
-    temp=ADC[0];
-    _delay_ms(0.01);
-    temp=ADC[0];
-    _delay_ms(0.01);
-    break;
-
-    }*/
-    //while (!(PORTD && (1<<PD4))){}; // wait for busy wait
-
-    /*for (volatile int i=0; i<100;i++){
-        printf("%d",PORTD&&(1<<PD4));
-    }*/
     ADC[0]=1;
     while(PIND & (1<<PD4));
     volatile sample value;
@@ -41,12 +22,8 @@ sample ADC_sample(){
     value.joystick_y = ADC[0];
     value.touch_x = ADC[0];
     value.touch_y = ADC[0];
-    printf("jx=%u ", value.joystick_x);
-    printf("jy=%u " , value.joystick_y);
-    printf("%u ", value.touch_x);
-    printf("%u\n ", value.touch_y);
 
 
     return value;
 
-}
+} //TODO: interrupt routine?
