@@ -16,7 +16,7 @@ void ADC_test(){
         printf("jy=%u " , value.joystick_y);
         printf("%u ", value.touch_x);
         printf("%u\n ", value.touch_y);
-        _delay_ms(1000);
+        _delay_ms(10);
     }
     return;
 }

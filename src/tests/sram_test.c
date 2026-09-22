@@ -8,7 +8,14 @@ void SRAM_test(void)
     uint16_t ext_ram_size = 0xC00; //1200, 800 før
     uint16_t write_errors = 0;
     uint16_t retrieval_errors = 0;
-
+    while (1){
+        ext_ram[101]='b';
+        volatile char u=ext_ram[101];
+        printf("%c",u);
+        if (u!='b'){
+            printf("error");
+        }
+    }
     printf("Starting SRAM test...\n");
 
     // rand() stores some internal state, so calling this function in a loop
