@@ -22,8 +22,8 @@ int main(void) {
     USART_Init(MYUBRR);
     ADC_init();
     external_memory_init();
-    SRAM_test();
-    //ADC_test();
+    //SRAM_test();
+    ADC_test();
     //usart_transmit_polling('a');
    
 

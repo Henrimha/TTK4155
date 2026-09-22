@@ -4,4 +4,4 @@
 
 void SPI_MasterInit(void);
 
-void SPI_MasterTransmit(char cData);
+char SPI_MasterTransmit(char cData);
