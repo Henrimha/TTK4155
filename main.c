@@ -8,6 +8,7 @@
 #include <SRAM_driver.h>
 #include <ADC_driver.h>
 #include <tests/ADC_test.h>
+#include <SPI_driver.h>
 
 // #define FOSC 1843200// Clock Speed
 #define FOSC 4915200UL// Clock Speed
@@ -23,7 +24,14 @@ int main(void) {
     ADC_init();
     external_memory_init();
     //SRAM_test();
-    ADC_test();
+    SPI_MasterInit();
+    //ADC_test();
+
+    while(1){
+        printf("%c",button_read());
+        Oled_transmit('h',0);
+
+    }
     //usart_transmit_polling('a');
    
 
