@@ -18,10 +18,10 @@ sample ADC_sample(){
     ADC[0]=1;
     while(PIND & (1<<PD4));
     volatile sample value;
-    value.joystick_x = ADC[0];
-    value.joystick_y = ADC[0];
-    value.touch_x = ADC[0];
-    value.touch_y = ADC[0];
+    value.joystick_x = (ADC[0]-66)*0.562;
+    value.joystick_y = (ADC[0]-69)*0.562;
+    value.touch_x = ADC[0]/2.55;
+    value.touch_y = ADC[0]/2.55;
 
 
     return value;

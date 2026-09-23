@@ -8,10 +8,7 @@ void ADC_test(){
         ADC[0]=1;
         while(PIND & (1<<PD4));
         volatile sample value;
-        value.joystick_x = ADC[0];
-        value.joystick_y = ADC[0];
-        value.touch_x = ADC[0];
-        value.touch_y = ADC[0];
+        value=ADC_sample();
         printf("jx=%u ", value.joystick_x);
         printf("jy=%u " , value.joystick_y);
         printf("%u ", value.touch_x);

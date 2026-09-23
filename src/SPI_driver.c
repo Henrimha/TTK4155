@@ -1,5 +1,5 @@
 #include "SPI_driver.h"
-void SPI_MasterInit(void)
+void SPI_Init(void)
 {
 //Set the SS pin to be output pin
 DDRB|=(1<<PB4)|(1<<PB7)|(1<<PB5); //Buttons CS, SCK, MOSI: are output
@@ -29,7 +29,7 @@ return SPDR;
 //Need to set the direction of SS pin, as an output
 //If set as an input, when driven low, it automaticly sets itself as slave
 
-void Oled_transmit(char data, int command){
+void oled_transmit(char data, int command){
     if (command){
         PORTD &= ~(1<<PD3);
     }

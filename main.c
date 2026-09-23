@@ -9,6 +9,7 @@
 #include <ADC_driver.h>
 #include <tests/ADC_test.h>
 #include <SPI_driver.h>
+#include "oled_driver.h"
 
 // #define FOSC 1843200// Clock Speed
 #define FOSC 4915200UL// Clock Speed
@@ -19,17 +20,19 @@
 
 int main(void) {
     fdevopen(USART_put, USART_get);
-    // // firkantpuls();
     USART_Init(MYUBRR);
     ADC_init();
     external_memory_init();
+    SPI_Init();
+    oled_init();
+
+    ADC_test();
     //SRAM_test();
-    SPI_MasterInit();
-    //ADC_test();
+    // firkantpuls();
 
     while(1){
         printf("%c",button_read());
-        Oled_transmit('h',0);
+        oled_transmit('h',0);
 
     }
     //usart_transmit_polling('a');
