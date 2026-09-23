@@ -13,3 +13,4 @@ static inline void oled_command(char data){ oled_transmit(data,1);};
 
 static inline void oled_data(char data){ oled_transmit(data,0);};
  
+void oled_home();
