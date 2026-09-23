@@ -26,19 +26,26 @@ int main(void) {
     SPI_Init();
     oled_init();
 
-    ADC_test();
-    //SRAM_test();
+    //ADC_test();
+    for (int i=0; i<16;i++){
+        for (int j=0;j<8;j++){
+            oled_data(0x0);
+        }
+    }
+    SRAM_test();
+    
     // firkantpuls();
-
+    /*
     while(1){
         printf("%c",button_read());
         oled_transmit('h',0);
 
-    }
+    }*/
     //usart_transmit_polling('a');
    
 
     //PORTA &= ~(1 << PA0);
+    
     return 0;
 }
 // SPørs,ålsliste: 
