@@ -27,12 +27,10 @@ int main(void) {
     oled_init();
 
     //ADC_test();
-    for (int i=0; i<16;i++){
-        for (int j=0;j<8;j++){
-            oled_data(0x0);
-        }
-    }
+    oled_clear();
     SRAM_test();
+    oled_home();
+    oled_print("Byggern!!",9);
     
     // firkantpuls();
     /*

@@ -29,8 +29,9 @@ void oled_init(void){
     oled_command(0x0); //Horizontal adressing mode
 
     oled_command(A0h); //set segment remap to 0, column 0 is to the left
+    oled_command(0xA1);
     oled_command(C0h); //Scan direction is from COM0 to COM[N-1]
-
+    oled_command(0xC8);
     oled_home(); //go to (0,0), can write everywhere
     
     oled_command(0xAF); //display on
@@ -55,4 +56,35 @@ void oled_home(){
     oled_command(0); //start 0
     oled_command(7); //end 7
     return;
+}
+
+void oled_goto_page_column(uint8_t page, uint8_t column){
+    oled_command(0x21); //Setting column adress
+    oled_command(column); //Start at 0
+    oled_command(127); //end at 127
+
+    oled_command(0x22); //set page adress
+    oled_command(page); //start 0
+    oled_command(7); //end 7
+    return;
+}
+
+void oled_char( char letter){
+    for (int i = 0; i < 8; i++) {
+        oled_data(pgm_read_byte(&font8[letter-32][i]));
+    }
+
+}
+
+void oled_print( char *data, size_t length){
+    for (size_t i=0;i<length;i++) {
+        oled_char(data[i]);
+    }
+}
+
+void oled_clear(){
+    oled_home();
+    for (int i=0;i<8*128;i++){
+        oled_data(0x00);
+    }
 }

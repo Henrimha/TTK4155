@@ -29,7 +29,7 @@ return SPDR;
 //Need to set the direction of SS pin, as an output
 //If set as an input, when driven low, it automaticly sets itself as slave
 
-void oled_transmit(char data, int command){
+char oled_transmit(char data, int command){
     if (command){
         PORTD &= ~(1<<PD3);
     }
@@ -37,14 +37,65 @@ void oled_transmit(char data, int command){
         PORTD |=(1<<PD3);
     }
     PORTD &= ~(1<<PD2); 
-    SPI_Transmit(data);
+    char temp=SPI_Transmit(data);
     PORTD |= (1<<PD2);
-    return;
+    return temp;
 }
 
-char button_read(void){
+char IO_transmit(char data){
     PORTB &= ~(1<<PB4);
-    char result=SPI_Transmit('a'); //dummy value
+    char result=SPI_Transmit(data); //dummy value
     PORTB |= (1<<PB4);
     return result;
+}
+
+void SPI_write(char data, int slave){ //slave=0 => oled, 1 => IO board
+    if (slave==0){
+        oled_transmit(data,0);
+    }
+    else if (slave==1){
+        IO_transmit(data);
+    }
+}
+char SPI_read(int slave){
+    if (slave==0){
+        return oled_transmit('a',0);
+    }
+    else if(slave==1){
+        return IO_transmit('a');
+    }
+}
+char SPI_readNwrite(char data, int slave){
+    if (slave==0){
+        return oled_transmit(data,0);
+    }
+    else if (slave==1){
+        return IO_transmit(data);
+    }
+
+}
+
+Buttons Buttons_read(void){
+    Buttons result;
+    IO_transmit(0x04);
+    _delay_us(40);
+    result.right=IO_transmit(0x00);
+    _delay_us(2);
+    result.left=IO_transmit(0x00);
+    _delay_us(2);
+    result.nav=IO_transmit(0x00);
+    return result;
+
+
+}
+
+void LED_enable(int LED_N, int state){
+    IO_transmit(0x05);
+    IO_transmit(LED_N);
+    IO_transmit(state);
+}
+void LED_PWM(int LED_N, uint8_t width){
+    IO_transmit(0x06);
+    IO_transmit(LED_N);
+    IO_transmit(width);
 }
