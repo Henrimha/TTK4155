@@ -10,6 +10,8 @@
 #include <tests/ADC_test.h>
 #include <SPI_driver.h>
 #include "oled_driver.h"
+#include "menu.h"
+#include "tests/joystick_test.h"
 
 // #define FOSC 1843200// Clock Speed
 #define FOSC 4915200UL// Clock Speed
@@ -26,11 +28,14 @@ int main(void) {
     SPI_Init();
     oled_init();
 
-    //ADC_test();
+    // ADC_test();
     oled_clear();
-    SRAM_test();
-    oled_home();
-    oled_print("Byggern!!",9);
+    // SRAM_test();
+    // oled_print("SuG BalLE og pikk");
+    // joystick_test();
+    buttons_test();
+    // menu_state_machine();
+
     
     // firkantpuls();
     /*

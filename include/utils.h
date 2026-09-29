@@ -3,3 +3,6 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include "fonts.h"
+#include "string.h"
+#include <avr/interrupt.h>
+#include <stdio.h>

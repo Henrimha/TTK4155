@@ -21,8 +21,7 @@ char SPI_Transmit(char cData)
 /* Start transmission, SPDR is read write register */
 SPDR = cData;
 /* Wait for transmission complete , SPIF is flag for done with transmission*/
-while(!(SPSR & (1<<SPIF)))
-;
+while(!(SPSR & (1<<SPIF)));
 return SPDR;
 }//Copied from datasheet
 
@@ -42,9 +41,27 @@ char oled_transmit(char data, int command){
     return temp;
 }
 
+char SPI_master_transmit(char cData, Slaves slave){
+    switch(slave){
+        case(IO_BOARD):
+            PORTB &= ~(1 << PB4); // PB4 = CS io board
+            PORTD |= (1 << PD2); // PD2 = CS oled display
+            break;
+
+        case(OLED_SCREEN):
+            PORTD &= ~(1 << PD2);
+            PORTB |= (1 << PB4);
+            break;
+    }
+    SPDR = cData;
+    while(!(SPSR & (1 << SPIF)));   
+    return SPDR;
+}
+
+
 char IO_transmit(char data){
     PORTB &= ~(1<<PB4);
-    char result=SPI_Transmit(data); //dummy value
+    char result=SPI_Transmit(data); 
     PORTB |= (1<<PB4);
     return result;
 }
@@ -77,25 +94,43 @@ char SPI_readNwrite(char data, int slave){
 
 Buttons Buttons_read(void){
     Buttons result;
-    IO_transmit(0x04);
+    PORTB &= ~(1<<PB4);
+    SPI_master_transmit(0x04, IO_BOARD);
     _delay_us(40);
-    result.right=IO_transmit(0x00);
+    result.right = SPI_master_transmit(0x00, IO_BOARD);
     _delay_us(2);
-    result.left=IO_transmit(0x00);
+    result.left = SPI_master_transmit(0x00, IO_BOARD);
     _delay_us(2);
-    result.nav=IO_transmit(0x00);
-    return result;
+    result.nav = SPI_master_transmit(0x00, IO_BOARD);
+    PORTB |= (1<<PB4);
 
+    return result;
 
 }
 
-void LED_enable(int LED_N, int state){
+void LED_enable(int LED_N, uint8_t state){
     IO_transmit(0x05);
     IO_transmit(LED_N);
     IO_transmit(state);
 }
-void LED_PWM(int LED_N, uint8_t width){
+void LED_PWM(int LED_N, uint8_t width){    PORTB |= (1<<PB4);
+
     IO_transmit(0x06);
     IO_transmit(LED_N);
-    IO_transmit(width);
+    IO_transmit(width); //0 to 255
+}
+
+Joystick joystick_read (void){
+    Joystick joystick;
+    PORTB &= ~(1<<PB4);
+    SPI_Transmit(0x03);
+    _delay_us(80);
+    joystick.X = SPI_Transmit(0x00);
+    _delay_us(15);
+    joystick.Y = SPI_Transmit(0x00);
+    _delay_us(15);
+    joystick.btn = SPI_Transmit(0x00);
+    PORTB |= (1<<PB4);
+
+    return joystick;
 }

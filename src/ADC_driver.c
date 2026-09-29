@@ -12,14 +12,23 @@ void ADC_init(){
 
     DDRD &=~(1<<PD4);
 }
+
+static uint8_t scale_axis(uint8_t raw, uint8_t min){
+    int16_t v = ((int16_t)raw - min) * 0.562;
+    if(v < 0){v = 0;}
+    if(v > 100){v = 100;}
+    return (uint8_t)v;
+}
+
+
 // 200 mikrosekunder
 sample ADC_sample(){
     volatile uint8_t *ADC=(uint8_t*)0x1000;
     ADC[0]=1;
     while(PIND & (1<<PD4));
     volatile sample value;
-    value.joystick_x = (ADC[0]-66)*0.562;
-    value.joystick_y = (ADC[0]-69)*0.562;
+    value.joystick_x = scale_axis(ADC[0], 66);
+    value.joystick_y = scale_axis(ADC[0], 69);
     value.touch_x = ADC[0]/2.55;
     value.touch_y = ADC[0]/2.55;
 
