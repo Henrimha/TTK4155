@@ -7,9 +7,11 @@ void menu_state_machine(){
     int left_padding = 10;
     sample joystick_pos;
     enum Joystick_states joystick_state  = NEUTRAL;
+    Buttons buttons;
     
     while(1){
         joystick_pos = ADC_sample();
+        buttons = Buttons_read();
 
         switch(joystick_state){
             case(UP):
@@ -53,13 +55,14 @@ void menu_state_machine(){
 
         switch(menu_state){
             case(MAIN_MENU):
-                // trigger
-                // if(button lav && selector hode)
-                //     {
-                //         menu_state = HEAD_MENU;
-                //         oled_clear();
-                //         break;
-                //     }
+
+                if(buttons.R4 && (selector_position == 0))
+                    {
+                        menu_state = HEAD_MENU;
+                        oled_clear();
+                        break;
+                    }
+                
 
                 // action
                 oled_goto_page_column(0,left_padding);
@@ -74,15 +77,18 @@ void menu_state_machine(){
                 oled_goto_page_column(selector_position,0);
                 oled_print(">");
 
-            break;
+                // trigger
+                
 
-            // case(HEAD_MENU):
-            //     // trigger
-            //         if(button lav && selector tilbake){
-            //             menu_state = MAIN_MENU;
-            //             oled_clear();
-            //             break;
-            //         }
+                break;
+
+            case(HEAD_MENU):
+                // trigger
+                    if(buttons.R4 && (selector_position == 3)){
+                        menu_state = MAIN_MENU;
+                        oled_clear();
+                        break;
+                    }
 
                 // action
                 oled_goto_page_column(0,left_padding);

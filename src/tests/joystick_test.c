@@ -5,11 +5,11 @@ void joystick_test (void){
     while(1){
 
         Joystick joystick = joystick_read();
-        // printf("%d", joystick.X);
-        // printf("%d", joystick.Y);
-        printf("%d", joystick.btn);
+        // printf("%d\n\r", joystick.X);
+        // printf("%d\n\r", joystick.Y);
+        printf("%d\n\r", joystick.btn);
 
-        // _delay_ms(100);
+        _delay_ms(200);
 
     }
 }

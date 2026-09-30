@@ -28,12 +28,12 @@ int main(void) {
     SPI_Init();
     oled_init();
 
-    // ADC_test();
     oled_clear();
+    // ADC_test();
     // SRAM_test();
     // oled_print("SuG BalLE og pikk");
-    // joystick_test();
-    buttons_test();
+    joystick_test();
+    // buttons_test();
     // menu_state_machine();
 
     
@@ -44,7 +44,7 @@ int main(void) {
         oled_transmit('h',0);
 
     }*/
-    //usart_transmit_polling('a');
+    // usart_transmit_polling('a');
    
 
     //PORTA &= ~(1 << PA0);
