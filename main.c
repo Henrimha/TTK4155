@@ -32,9 +32,9 @@ int main(void) {
     // ADC_test();
     // SRAM_test();
     // oled_print("SuG BalLE og pikk");
-    joystick_test();
+    // joystick_test();
     // buttons_test();
-    // menu_state_machine();
+    menu_state_machine();
 
     
     // firkantpuls();

@@ -18,6 +18,6 @@ void oled_home();
 
 void oled_char( char letter);
 
-void oled_print( char text[]);
+void oled_print(const char text[]);
 
 void oled_clear();
