@@ -53,7 +53,6 @@ int main(void) {
 }
 // SPørs,ålsliste: 
 // F0SC vs F_CPU
-// 
 
 
 // kortslutt

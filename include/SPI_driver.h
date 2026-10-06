@@ -11,9 +11,9 @@ void SPI_Init(void);
 
 char SPI_shout(char cData);
 
-char IO_transmit(char data);
+static inline char IO_transmit(char data){return SPI_transmit( data, IO_BOARD);};
 
-char oled_transmit(char data, int command);
+static inline char oled_transmit(char data, int command){}
 
 char SPI_transmit(char cData, Slaves slave);
 
