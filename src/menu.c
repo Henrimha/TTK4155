@@ -73,15 +73,7 @@ void menu_state_machine(void){
                     }else{
                         selector_position--;
                     }
-
-                    // for(int i = 0; i < 4; i++){
-                    //     oled_goto_page_column(i,0);
-                    //     oled_print(" ");
-                    // };
-                    // selector_position--;
-                    // if (selector_position < 0){
-                    //     selector_position = MENU_COUNTS + 1;
-                    // }       
+     
                 }
                 else if(joystick_pos.joystick_y < 10){
                     joystick_state = DOWN;
@@ -92,14 +84,6 @@ void menu_state_machine(void){
                         selector_position = 0;
                     }
 
-                    // for(int i = 0; i < 4; i++){
-                    //     oled_goto_page_column(i,0);
-                    //     oled_print(" ");
-                    // };
-                    // selector_position++;
-                    // if (selector_position > MENU_COUNTS + 1){
-                    //     selector_position = 0;
-                    // }
                 }
                 break;
             case(DOWN):

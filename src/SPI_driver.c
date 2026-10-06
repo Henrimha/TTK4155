@@ -64,6 +64,9 @@ char SPI_master_transmit(char cData, Slaves slave){
             PORTD &= ~(1 << PD2);
             PORTB |= (1 << PB4);
             break;
+        
+        case(CAN_CONTROLLER):
+            break;
     }
     SPDR = cData;
     while(!(SPSR & (1 << SPIF)));   

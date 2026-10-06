@@ -3,7 +3,8 @@
 
 typedef enum{
     IO_BOARD,
-    OLED_SCREEN
+    OLED_SCREEN,
+    CAN_CONTROLLER
 } Slaves;
 
 void SPI_Init(void);
