@@ -2,12 +2,13 @@
 
 #define RESET ((1<<7)|(1<<6))
 #define READ ((1<<1)|(1<<0))
-#define READ_RX_BUFFER (())
+#define READ_RX_BUFFER (0b10010010)
 #define WRITE (1<<1)
 #define READ_STATUS ((1<<7)|(1<<5))
 #define RX_STATUS (0b10110000)
 #define BIT_MODIFY (0b00000101)
 #define CANCTRL (0b00001111)
+#define DUMMY_ADRESS (0b00000000)
 void CAN_init(){
     //Need to delay 128 clock cycles
 
@@ -15,6 +16,11 @@ void CAN_init(){
     //For now set after configuration state, loopback mode: when connecting others use normal mode
     char data[] = {BIT_MODIFY, CANCTRL, 0b11100011, 0b01000000};
     SPI_array_send(data, 4, CAN_CONTROLLER);
+    data={BIT_MODIFY,RXB0CTRL,0b01101111,0b01100000};
+    SPI_array_send(data,4,CAN_CONTROLLER);
+    //data={BIT_MODIFY,CANINTE, 0b00000001,0b000000001}
+    //TODO set RX0IE high
+
     // REQOP = REQuest OPeration mode bits
     // loopback mode (REQOP<2:0> = 010)
     // CANCTRL &= ~(1 << REQOP2);
@@ -42,11 +48,17 @@ void CAN_init(){
     provide reset
 */
 
-
-
-
 }
 
+void CAN_read(char* rData){
+    char data[]={READ_RX_BUFFER,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+    SPI_array_transmit(data,9,CAN_CONTROLLER,rData);
+    return;
+}
+
+void CAN_load(char* rData){
+    char data[9]={LOAD_TX_BUFFER,rData}
+}
 
 
 
@@ -60,6 +72,18 @@ void CAN_init(){
 //             all error counters cleared
 //         only mode when these registers can be modified:
 //             CNF1, CNF2, CNF3
+                // controls bit timing for can bus
+                // CNF1    
+                //     Baud rate prescaler
+                //     set lentgh of T_q relatice to OSC1 input frequency
+                //         minimum being 2 TOSC (BRP<5:0> = 0b000000)
+                //         SJW<1:0> select SJW in numbers of TQS
+                // CNF2
+                //     PRSEG<2:0> set lentgh in TQS of propagation segment
+                //     PHSEG1<2:0> set length in TQS of PS1 
+                //     SAM bit control how many timesthe RXCAN pin is sampled 
+                //         1 => three times 
+                    
 //             TXRTSCTRL
 //             Filter registers
 //             Mask registers 

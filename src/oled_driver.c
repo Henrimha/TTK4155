@@ -36,6 +36,7 @@ void oled_init(void){
     
     oled_command(0xAF); //display on
 
+    oled_clear();
     return;
 }
 //Frame frequency of display

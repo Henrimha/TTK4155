@@ -1,6 +1,8 @@
 #include "SPI_driver.h"
 static void send(char data);
 static void send_m(char* sData, size_t len, char* rData);
+static void SPI_IO_mode();
+static void SPI_CAN_mode();
 void SPI_Init(void)
 {
 //Set the SS pin to be output pin
@@ -16,18 +18,6 @@ PORTB|=(1<<PB4)|(1<<PB2); //set high, becuse active low
 DDRD|=(1<<PD2); //OLED CS is output
 PORTD|=(1<<PD2); //Set high, because active low
 
-
-// SPI clock 
-// SPCR |= (1 << SPR0);
-// SPCR &= ~(1 << SPR1);
-// SPSR &= ~(1 << SPI2X);
-
-// SPCR &= ~(1 << SPIE); //
-// SPCR |= (1 << SPE);
-// SPCR &= ~(1 << DORD);
-// SPCR |= (1 << MSTR);
-// SPCR |= (1 << CPOL);
-// SPCR &= ~(1 << CPHA);
 
 }
 char SPI_shout(char cData)
@@ -60,18 +50,21 @@ char SPI_transmit(char cData, Slaves slave){
     
     switch(slave){
         case(IO_BOARD):
+            SPI_IO_mode();
             PORTB &= ~(1 << PB4); // PB4 = CS io board
             send(cData);
             PORTB |= (1<<PB4);
             break;
 
         case(OLED_SCREEN):
+            SPI_IO_mode();
             PORTD &= ~(1 << PD2);
             send(cData);
             PORTD |= (1<<PD2);
             break;
         
         case(CAN_CONTROLLER):
+            SPI_CAN_mode();
             PORTB &= ~(1<<PB2);
             send(cData);
             PORTB |=(1<<PB2);
@@ -94,18 +87,21 @@ void SPI_array_transmit(char* sData, Slaves slave, size_t len, char* rData){
     
     switch(slave){
         case(IO_BOARD):
+            SPI_IO_mode();
             PORTB &= ~(1 << PB4); // PB4 = CS io board
             send_m(sData, len, rData);
             PORTB |= (1<<PB4);
             break;
 
         case(OLED_SCREEN):
+            SPI_IO_mode();
             PORTD &= ~(1 << PD2);
             send_m(sData, len, rData);
             PORTD |= (1<<PD2);
             break;
         
         case(CAN_CONTROLLER):
+            SPI_CAN_mode();
             PORTB &= ~(1<<PB2);
             send_m(sData, len, rData);
             PORTB |=(1<<PB2);
@@ -115,31 +111,25 @@ void SPI_array_transmit(char* sData, Slaves slave, size_t len, char* rData){
 }
 
 
-/*
-char CAN_transmit(char data){
-    PORTB &= ~(1<<PB4);
-    char result = SPI_Transmit(data);
-    PORTB |= (1<<PB4);
-    return result;
+static void SPI_IO_mode(){
+    SPCR |=(1<<CPOL);
+    
 }
-
-char IO_transmit(char data){
-    PORTB &= ~(1<<PB4);
-    char result=SPI_Transmit(data); 
-    PORTB |= (1<<PB4);
-    return result;
-}*/
+static void SPI_CAN_mode(){
+    SPCR &= ~(1<<CPOL);
+}
 
 Buttons Buttons_read(void){
     Buttons result;
+    SPI_IO_mode();
     PORTB &= ~(1<<PB4);
-    SPI_transmit(0x04, IO_BOARD);
+    SPI_shout(0x04);
     _delay_us(40);
-    result.right = SPI_transmit(0x00, IO_BOARD);
+    result.right = SPI_shout(0x00);
     _delay_us(2);
-    result.left = SPI_transmit(0x00, IO_BOARD);
+    result.left = SPI_shout(0x00);
     _delay_us(2);
-    result.nav = SPI_transmit(0x00, IO_BOARD);
+    result.nav = SPI_shout(0x00);
     PORTB |= (1<<PB4);
 
     return result;

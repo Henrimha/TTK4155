@@ -12,6 +12,7 @@
 #include "oled_driver.h"
 #include "menu.h"
 #include "tests/joystick_test.h"
+#include "CAN_driver.h"
 
 // #define FOSC 1843200// Clock Speed
 #define FOSC 4915200UL// Clock Speed
@@ -27,13 +28,12 @@ int main(void) {
     external_memory_init();
     SPI_Init();
     oled_init();
-
-    oled_clear();
+    CAN_init();
     // ADC_test();
     // SRAM_test();
     // oled_print("SuG BalLE og pikk");
     // joystick_test();
-    // buttons_test();
+    //buttons_test();
     menu_state_machine();
 
     
