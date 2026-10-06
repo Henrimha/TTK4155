@@ -147,3 +147,7 @@ Joystick joystick_read (void){
 
     return joystick;
 }
+
+char CAN_transmit(char data){
+    
+}
