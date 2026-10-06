@@ -9,19 +9,14 @@ typedef enum{
 
 void SPI_Init(void);
 
-char SPI_Transmit(char cData);
+char SPI_shout(char cData);
 
 char IO_transmit(char data);
 
 char oled_transmit(char data, int command);
 
-char SPI_master_transmit(char cData, Slaves slave);
+char SPI_transmit(char cData, Slaves slave);
 
-char SPI_read(int slave);
-
-void SPI_write(char data, int slave);
-
-char SPI_readNwrite(char data, int slave);
 
 
 
