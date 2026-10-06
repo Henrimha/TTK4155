@@ -1,4 +1,6 @@
 #include "SPI_driver.h"
+static void send(char data);
+static void send_m(char* sData, size_t len, char* rData);
 void SPI_Init(void)
 {
 //Set the SS pin to be output pin
@@ -50,16 +52,16 @@ char oled_transmit(char data, int command){
     
     return SPI_transmit(data, OLED_SCREEN);
 }
-
-char SPI_transmit(char cData, Slaves slave){
-    auto send = [](char cData){
+static void send(char cData){
         SPDR = cData;
         while(!(SPSR & (1 << SPIF))); 
     }
+char SPI_transmit(char cData, Slaves slave){
+    
     switch(slave){
         case(IO_BOARD):
             PORTB &= ~(1 << PB4); // PB4 = CS io board
-            send(cData)
+            send(cData);
             PORTB |= (1<<PB4);
             break;
 
@@ -77,6 +79,41 @@ char SPI_transmit(char cData, Slaves slave){
     }
     return SPDR;
 }
+
+static void send_m(char* sData, size_t len, char* rData){
+        for (size_t i=0;i<len;i++){
+            SPDR = sData[i];
+            while(!(SPSR & (1 << SPIF)));
+            if (rData!=0){
+                rData[i]=SPDR;
+            }
+        } 
+    }
+
+void SPI_array_transmit(char* sData, Slaves slave, size_t len, char* rData){
+    
+    switch(slave){
+        case(IO_BOARD):
+            PORTB &= ~(1 << PB4); // PB4 = CS io board
+            send_m(sData, len, rData);
+            PORTB |= (1<<PB4);
+            break;
+
+        case(OLED_SCREEN):
+            PORTD &= ~(1 << PD2);
+            send_m(sData, len, rData);
+            PORTD |= (1<<PD2);
+            break;
+        
+        case(CAN_CONTROLLER):
+            PORTB &= ~(1<<PB2);
+            send_m(sData, len, rData);
+            PORTB |=(1<<PB2);
+            break;
+    }
+    return;
+}
+
 
 /*
 char CAN_transmit(char data){

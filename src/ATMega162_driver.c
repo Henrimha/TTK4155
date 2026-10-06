@@ -73,3 +73,13 @@ int USART_get(FILE *stream){
     return (int)USART_Receive();
     
 }
+
+/*
+Nødvendig init på ATmegaen for Interrupts
+
+SREG |= (I<<1);  //Global interupts enabled
+MCUCR &= ~(ISC01<<1);  // Bestemmer når interrupts genereres. Trolig 0 0
+MCUCR &= ~(ISC00<<1);  //
+
+GICR |= (INT0<<1); // Externel interupt INT0 is enabled
+*/

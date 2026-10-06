@@ -13,6 +13,10 @@ char SPI_shout(char cData);
 
 char SPI_transmit(char cData, Slaves slave);
 
+void SPI_array_transmit(char* sData, Slaves slave, size_t len, char* rData);
+
+static inline void SPI_array_send(char* sData, Slaves slave, size_t len){SPI_array_transmit(sData,slave,len,0);};
+
 static inline char IO_transmit(char data){return SPI_transmit( data, IO_BOARD);};
 
 char oled_transmit(char data, int command);
