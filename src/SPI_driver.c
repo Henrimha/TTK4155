@@ -114,7 +114,7 @@ void LED_enable(int LED_N, uint8_t state){
     IO_transmit(LED_N);
     IO_transmit(state);
 }
-void LED_PWM(int LED_N, uint8_t width){    PORTB |= (1<<PB4);
+void LED_PWM(int LED_N, uint8_t width){  
 
     IO_transmit(0x06);
     IO_transmit(LED_N);

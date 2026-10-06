@@ -11,11 +11,13 @@ void SPI_Init(void);
 
 char SPI_shout(char cData);
 
+char SPI_transmit(char cData, Slaves slave);
+
 static inline char IO_transmit(char data){return SPI_transmit( data, IO_BOARD);};
 
-static inline char oled_transmit(char data, int command){}
+char oled_transmit(char data, int command);
 
-char SPI_transmit(char cData, Slaves slave);
+static inline char CAN_transmit(char data){return SPI_transmit(data, CAN_CONTROLLER);};
 
 
 
