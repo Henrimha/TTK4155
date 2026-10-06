@@ -16,8 +16,8 @@ void oled_init(void){
     oled_command(0x2E);//no scrolling, (RAM data needs to be rewritten)
     oled_command(0x40); // set display start line is 0. RAM of 0 is 0
     //set contrast
-    oled_command(0x81); //Set control
-    oled_command(A70); //Control
+    oled_command(0x81); //Set contrast
+    oled_command(A70); //Contrast
 
     oled_command(A6h); //Normal display, not inverse
     oled_command(A4h); //Output follows RAM content (oled RAM)
@@ -28,9 +28,9 @@ void oled_init(void){
     oled_command(0x20); //Set memory adressing mode
     oled_command(0x0); //Horizontal adressing mode
 
-    oled_command(A0h); //set segment remap to 0, column 0 is to the left
+    //oled_command(A0h); //set segment remap to 0, column 0 is to the left
     oled_command(0xA1);
-    oled_command(C0h); //Scan direction is from COM0 to COM[N-1]
+    //oled_command(C0h); //Scan direction is from COM0 to COM[N-1]
     oled_command(0xC8);
     oled_home(); //go to (0,0), can write everywhere
     
@@ -76,9 +76,10 @@ void oled_char( char letter){
 
 }
 
-void oled_print( char *data, size_t length){
+void oled_print(char text[]){
+    int length = strlen(text);
     for (size_t i=0;i<length;i++) {
-        oled_char(data[i]);
+        oled_char(text[i]);
     }
 }
 

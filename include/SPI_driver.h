@@ -1,6 +1,10 @@
 #pragma once
 #include "utils.h"
 
+typedef enum{
+    IO_BOARD,
+    OLED_SCREEN
+} Slaves;
 
 void SPI_Init(void);
 
@@ -10,11 +14,16 @@ char IO_transmit(char data);
 
 char oled_transmit(char data, int command);
 
+char SPI_master_transmit(char cData, Slaves slave);
+
 char SPI_read(int slave);
 
 void SPI_write(char data, int slave);
 
 char SPI_readNwrite(char data, int slave);
+
+
+
 
 typedef struct __attribute__((packed)) {
     union {
@@ -53,5 +62,13 @@ typedef struct __attribute__((packed)) {
 } Buttons;
 
 Buttons Buttons_read(void);
-void LED_enable(int LED_N, int state);
+void LED_enable(int LED_N, uint8_t state);
 void LED_PWM(int LED_N, uint8_t width);
+
+typedef struct{
+    uint8_t X; 
+    uint8_t Y;
+    uint8_t btn;
+}Joystick;
+
+Joystick joystick_read (void);
