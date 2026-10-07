@@ -16,10 +16,18 @@ void CAN_init(){
     //For now set after configuration state, loopback mode: when connecting others use normal mode
     char data[] = {BIT_MODIFY, CANCTRL, 0b11100011, 0b01000000};
     SPI_array_send(data, 4, CAN_CONTROLLER);
-    data={BIT_MODIFY,RXB0CTRL,0b01101111,0b01100000};
+    data* = {BIT_MODIFY, TXRTSCRTL, 0b00000111, 0x00}; //Disable requesting message transmission of the T buffers on the pins, they are input pins
     SPI_array_send(data,4,CAN_CONTROLLER);
-    //data={BIT_MODIFY,CANINTE, 0b00000001,0b000000001}
-    //TODO set RX0IE high
+    data*={BIT_MODIFY,RXB0CTRL,0b01101110,0b01100000}; //No filters, recieve all messages. Will get data up to an error, No remote transfer request recieved, no rollover, 
+    SPI_array_send(data,4,CAN_CONTROLLER);
+    //data={BIT_MODIFY,CANINTE, 0b00000001,0b000000001} //set RX0IE to enable interrupt on recieved message
+    data*={BIT_MODIFY, BFPCTRL, 0b0000 1100,0x00}; //RX0BF and RX1BF are set to high impedance, unused
+    SPI_array_send(data, 4, CAN_CONTROLLER);
+    data*={BIT_MODIFY, CNF1, 0b00111111,0x00};
+    SPI_array_send(data,4,CAN_CONTROLLER);
+    data*={BIT_MODIFY, CNF2, 0b11000000,0b10000000}; //BTLMODE ps2 is automaticly set, bus is only sampled once
+    SPI_array_send(data,4,CAN_CONTROLLER);
+
 
     // REQOP = REQuest OPeration mode bits
     // loopback mode (REQOP<2:0> = 010)
