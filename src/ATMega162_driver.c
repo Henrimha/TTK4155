@@ -1,8 +1,8 @@
 #include <avr/io.h>
 #include <ATMega162_driver.h>
 #include <stdio.h>
+#include "MCP2515.h"
 
-char INT0_FLAG;
 void USART_Init( unsigned int ubrr )
 {
     /* Set baud rate */
@@ -13,11 +13,12 @@ void USART_Init( unsigned int ubrr )
     /* Set frame format: 8data, 2stop bit */
     UCSR0C = (1<<URSEL0)|(0<<UMSEL0)|(1<<USBS0)|(1<<UPM01)|(0<<UPM00)|(1<<USBS0)|(3<<UCSZ00); // Akksesser UCSRC registeret. Velger asynkront, even parity. 2 stop bit.  8-bit character size. 
 
-    CAN_RX_FLAG=0;
-    MCUCR |=(1<<ISC01)
-    MCUCR &=~(1<<ISC00); // Interrupt on falling edge of INT0
+    //Interrupt setup
+    DDRD &= ~(1<<PD2);  // PD2/INT0 as input
+    MCUCR &= ~(1<<ISC01);
+    MCUCR &= ~(1<<ISC00); // Interrupt on falling edge of INT0
     GICR = (1<<INT0); //Enable interrupt for INT0
-
+    sei();
     /*
     Finne f_osc pga UBRR0H 
     U2X = 1 eller 0?? bleeleel
@@ -78,10 +79,19 @@ int USART_get(FILE *stream){
     
 }
 
-ISR(INT0_VEC){
-    INT0_FLAG=1;INT0_VEC
+ISR(INT0_vect){
+    INT0_FLAG=1;
+    GICR &= ~(1<<INT0);
 }
 
 void int0_interrupt_routine(){
-    
+    char error_m=mcp2515_read(MCP_CANINTF);
+    if (error_m & (1<<MCP_RX0IF)){
+        
+        CAN_read(CAN_RX_DATA);
+        oled_goto_page_column(7, 0);
+        oled_print(CAN_RX_DATA);
+    }
+    GICR |= (1<<INT0);
+    return;
 }

@@ -20,8 +20,6 @@
 #define BAUD 9600
 #define MYUBRR FOSC/16/BAUD-1
 
-extern char INT0_FLAG;
-
 int main(void) {
     fdevopen(USART_put, USART_get);
     USART_Init(MYUBRR);
@@ -38,11 +36,16 @@ int main(void) {
     //buttons_test();
     menu_state_machine();
 
+    set_sleep_mode(SLEEP_MODE_PWR_SAVE);
     
     while (1){
         if(INT0_FLAG){
             int0_interrupt_routine();
+            INT0_FLAG=0;
         }
+        sleep_enable();
+        sleep_cpu();  
+        sleep_disable();
     }
     
     return 0;

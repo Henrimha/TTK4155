@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "SPI_driver.h"
 #include "CAN_driver.h"
+#include "oled_driver.h"
 
 #define baud F_CPU/(16*(UBRR+1))
 
