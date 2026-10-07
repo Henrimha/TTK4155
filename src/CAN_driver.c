@@ -1,18 +1,17 @@
 #include "CAN_driver.h"
+#include "MCP2515.h"
 
-#define RESET ((1<<7)|(1<<6))
+// #define MCP_RESET ((1<<7)|(1<<6))
 #define READ ((1<<1)|(1<<0))
 #define READ_RX_BUFFER (0b10010010)
 #define WRITE (1<<1)
 #define READ_STATUS ((1<<7)|(1<<5))
-#define RX_STATUS (0b10110000)
+// #define RX_STATUS (0b10110000)
 #define BIT_MODIFY (0b00000101)
 #define CANCTRL (0b00001111)
 #define DUMMY_ADRESS (0b00000000)
 void CAN_init(){
     //Need to delay 128 clock cycles
-
-    CAN_transmit(RESET);
     //For now set after configuration state, loopback mode: when connecting others use normal mode
     char data[] = {BIT_MODIFY, CANCTRL, 0b11100011, 0b01000000};
     SPI_array_send(data, 4, CAN_CONTROLLER);
@@ -29,6 +28,9 @@ void CAN_init(){
     SPI_array_send(data,4,CAN_CONTROLLER);
 
 
+
+    
+   
     // REQOP = REQuest OPeration mode bits
     // loopback mode (REQOP<2:0> = 010)
     // CANCTRL &= ~(1 << REQOP2);
@@ -60,15 +62,42 @@ void CAN_init(){
 
 void CAN_read(char* rData){
     char data[]={READ_RX_BUFFER,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-    SPI_array_transmit(data,9,CAN_CONTROLLER,rData);
+    SPI_array_transmit(data,CAN_CONTROLLER,9,rData);
+
     return;
 }
 
-void CAN_load(char* rData){
-    char data[9]={LOAD_TX_BUFFER,rData}
+void CAN_send(char* rData){
+    char data[9]={LOAD_TX_BUFFER,rData};
 }
 
 
+
+
+// from lab presentation
+// uint8_t mcp2525_read(uint8_t adress){
+//     uint8_t result;
+//     PORTB &= ~(1 << CAN_CS); // Select CAN controller
+//     SPI_write(MCP_READ); // send read instruction
+//     SPI_write (adress); // send adress
+//     result = SPI_read(); // read result
+//     PORTB |= (1 << CAN_CS); // Deselect CAN controller 
+//     return result;
+// }
+
+// uint8_t mcp2515_init(){
+//     uint8_t value;
+//     SPI_init(); // initialize SPI
+//     mcp2515_reset(); // send reset - command
+//     // self test
+//     mcp2515_read(MCP_CANSTAT, &value);
+//     if ((value & MODE_MASK) != MODE_CONFIG){
+//         printf("MCP2515 is NOT in config mode after reset!\n");
+//         return 1
+//     }
+//     // more initialization
+//     return 0
+// }
 
 
 

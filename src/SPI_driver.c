@@ -23,10 +23,10 @@ PORTD|=(1<<PD2); //Set high, because active low
 char SPI_shout(char cData)
 {
 /* Start transmission, SPDR is read write register */
-SPDR = cData;
-/* Wait for transmission complete , SPIF is flag for done with transmission*/
-while(!(SPSR & (1<<SPIF)));
-return SPDR;
+    SPDR = cData;
+    /* Wait for transmission complete , SPIF is flag for done with transmission*/
+    while(!(SPSR & (1<<SPIF)));
+    return SPDR;
 }//Copied from datasheet
 
 //Need to set the direction of SS pin, as an output

@@ -30,6 +30,7 @@ int main(void) {
     SPI_Init();
     oled_init();
     CAN_init();
+
     // ADC_test();
     // SRAM_test();
     // oled_print("SuG BalLE og pikk");

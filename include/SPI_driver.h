@@ -21,7 +21,7 @@ static inline char IO_transmit(char data){return SPI_transmit( data, IO_BOARD);}
 
 char oled_transmit(char data, int command);
 
-static inline char CAN_transmit(char data){return SPI_transmit(data, CAN_CONTROLLER);};
+static inline char mcp2515_transmit(char data){return SPI_transmit(data, CAN_CONTROLLER);};
 
 
 
