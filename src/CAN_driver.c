@@ -28,6 +28,13 @@ void CAN_init(){
     SPI_array_send(data,4,CAN_CONTROLLER);
 
 
+    //new CAN init
+    mcp2515_bit_modify(MCP_RXB0CTRL, 0b01100100,0b01100000); //No filters, recieve all messages. Will get data up to an error, No remote transfer request recieved, no rollover,
+    mcp2515_bit_modify(CNF1, 0b00111111,0x00);
+
+    // TODO: Mangler CNF 1 2 og 3. Usikker på frekvens til CAN kontroller, 16 eller 4,9 osv. 
+    // Den fysiske man skal koble på. Også er det avhengig av hva CNF skal være. 
+    // Fjern lt over i CAN init. Og legg til CNF under new CAN init. 
 
     
    

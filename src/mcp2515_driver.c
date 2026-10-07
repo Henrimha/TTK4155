@@ -1,4 +1,7 @@
 #include "mcp2515_driver.h"
+#define MCP_TXRTSCTRL (0b00001101)
+#define MCP_BFPCTRL (0x0C)
+
 
 void mcp2515_init(){
     mcp2515_transmit(RESET);
@@ -7,10 +10,13 @@ void mcp2515_init(){
         SPDR = 0x00;
         while (!(SPSR & (1 << SPIF)));
     }
+
+    mcp2515_bit_modify(MCP_TXRTSCTRL, 0b00000111, 0b01000000); //Disable requesting message transmission of the T buffers on the pins, they are input pins
+    mcp2515_bit_modify(MCP_BFPCTRL, 0b0000 1100,0x00); //RX0BF and RX1BF are set to high impedance, unused
     
     
-    mcp2515_bit_modify(MCP_CANCTRL, , MODE_LOOPBACK)
-    mcp2515_write
+    mcp2515_bit_modify(MCP_CANCTRL, 0b11100011, MODE_LOOPBACK); // sets F_clkout to System clock/1
+    
 }
 
 char mcp2515_read(char adress){
