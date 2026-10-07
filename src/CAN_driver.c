@@ -25,7 +25,7 @@ void CAN_init(){
     data*={BIT_MODIFY, CNF1, 0b00111111,0x00};
     SPI_array_send(data,4,CAN_CONTROLLER);
     data*={BIT_MODIFY, CNF2, 0b11000000,0b10000000}; //BTLMODE ps2 is automaticly set, bus is only sampled once
-    SPI_array_send(data,4,CAN_CONTROLLER);
+    SPI_array_send(data,4,CAN_CONTROLLER);    
 
 
     //new CAN init
