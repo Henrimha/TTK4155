@@ -1,6 +1,8 @@
 #pragma once
 #include <utils.h>
 #include <stdio.h>
+#include "SPI_driver.h"
+#include "CAN_driver.h"
 
 #define baud F_CPU/(16*(UBRR+1))
 
@@ -14,3 +16,4 @@ int USART_get(FILE *stream);
 
 unsigned char USART_Receive( void );
 
+void int0_interrupt_routine();

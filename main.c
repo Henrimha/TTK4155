@@ -20,6 +20,7 @@
 #define BAUD 9600
 #define MYUBRR FOSC/16/BAUD-1
 
+extern char INT0_FLAG;
 
 int main(void) {
     fdevopen(USART_put, USART_get);
@@ -37,17 +38,11 @@ int main(void) {
     menu_state_machine();
 
     
-    // firkantpuls();
-    /*
-    while(1){
-        printf("%c",button_read());
-        oled_transmit('h',0);
-
-    }*/
-    // usart_transmit_polling('a');
-   
-
-    //PORTA &= ~(1 << PA0);
+    while (1){
+        if(INT0_FLAG){
+            int0_interrupt_routine();
+        }
+    }
     
     return 0;
 }

@@ -21,7 +21,7 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_RXF0EID0	0x03
 #define MCP_RXF1SIDH	0x04
 #define MCP_RXF1SIDL	0x05
-#define MCP_RXF1EID8	0x06
+#define MCP_RXF1EID8	0x06   
 #define MCP_RXF1EID0	0x07
 #define MCP_RXF2SIDH	0x08
 #define MCP_RXF2SIDL	0x09

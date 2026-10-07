@@ -2,25 +2,29 @@
 #include <ATMega162_driver.h>
 #include <stdio.h>
 
-
+char INT0_FLAG;
 void USART_Init( unsigned int ubrr )
 {
-/* Set baud rate */
-UBRR0H = (unsigned char)(ubrr>>8);
-UBRR0L = (unsigned char)ubrr;
-/* Enable receiver and transmitter */
-UCSR0B = (1<<RXEN0)|(1<<TXEN0);
-/* Set frame format: 8data, 2stop bit */
-UCSR0C = (1<<URSEL0)|(0<<UMSEL0)|(1<<USBS0)|(1<<UPM01)|(0<<UPM00)|(1<<USBS0)|(3<<UCSZ00); // Akksesser UCSRC registeret. Velger asynkront, even parity. 2 stop bit.  8-bit character size. 
+    /* Set baud rate */
+    UBRR0H = (unsigned char)(ubrr>>8);
+    UBRR0L = (unsigned char)ubrr;
+    /* Enable receiver and transmitter */
+    UCSR0B = (1<<RXEN0)|(1<<TXEN0);
+    /* Set frame format: 8data, 2stop bit */
+    UCSR0C = (1<<URSEL0)|(0<<UMSEL0)|(1<<USBS0)|(1<<UPM01)|(0<<UPM00)|(1<<USBS0)|(3<<UCSZ00); // Akksesser UCSRC registeret. Velger asynkront, even parity. 2 stop bit.  8-bit character size. 
 
+    CAN_RX_FLAG=0;
+    MCUCR |=(1<<ISC01)
+    MCUCR &=~(1<<ISC00); // Interrupt on falling edge of INT0
+    GICR = (1<<INT0); //Enable interrupt for INT0
 
-/*
-Finne f_osc pga UBRR0H 
-U2X = 1 eller 0?? bleeleel
-Sette riktig baud rate (9600) 
-Sett inn riktig UBRR0H og UBRR0L
-*/
- 
+    /*
+    Finne f_osc pga UBRR0H 
+    U2X = 1 eller 0?? bleeleel
+    Sette riktig baud rate (9600) 
+    Sett inn riktig UBRR0H og UBRR0L
+    */
+    
 
 } //copied from ATmega162 datasheet, page 172
 
@@ -74,12 +78,10 @@ int USART_get(FILE *stream){
     
 }
 
-/*
-Nødvendig init på ATmegaen for Interrupts
+ISR(INT0_VEC){
+    INT0_FLAG=1;INT0_VEC
+}
 
-SREG |= (I<<1);  //Global interupts enabled
-MCUCR &= ~(ISC01<<1);  // Bestemmer når interrupts genereres. Trolig 0 0
-MCUCR &= ~(ISC00<<1);  //
-
-GICR |= (INT0<<1); // Externel interupt INT0 is enabled
-*/
+void int0_interrupt_routine(){
+    
+}
