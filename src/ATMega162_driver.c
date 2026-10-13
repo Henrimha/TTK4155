@@ -2,6 +2,7 @@
 #include <ATMega162_driver.h>
 #include <stdio.h>
 #include "MCP2515.h"
+#include "mcp2515_driver.h"
 
 void USART_Init( unsigned int ubrr )
 {
@@ -13,7 +14,6 @@ void USART_Init( unsigned int ubrr )
     /* Set frame format: 8data, 2stop bit */
     UCSR0C = (1<<URSEL0)|(0<<UMSEL0)|(1<<USBS0)|(1<<UPM01)|(0<<UPM00)|(1<<USBS0)|(3<<UCSZ00); // Akksesser UCSRC registeret. Velger asynkront, even parity. 2 stop bit.  8-bit character size. 
 
-    
     /*
     Finne f_osc pga UBRR0H 
     U2X = 1 eller 0?? bleeleel
@@ -26,10 +26,10 @@ void USART_Init( unsigned int ubrr )
 
 void interrrupt_init(){
     //Interrupt setup
-    DDRD &= ~(1<<PD2);  // PD2/INT0 as input
-    MCUCR &= ~(1<<ISC01);
-    MCUCR &= ~(1<<ISC00); // Interrupt on INT0 is low
-    GICR |= (1<<INT0); //Enable interrupt for INT0
+    DDRD &= ~(1<<PD3);  // PD3/INT1 as input
+    MCUCR &= ~(1<<ISC10);
+    MCUCR &= ~(1<<ISC11); // Interrupt on INT0 is low
+    GICR |= (1<<INT1); //Enable interrupt for INT1
     sei();
 }
 
@@ -83,19 +83,19 @@ int USART_get(FILE *stream){
     
 }
 
-ISR(INT0_vect){
-    INT0_FLAG=1;
-    GICR &= ~(1<<INT0);
+ISR(INT1_vect){
+    INT1_FLAG=1;
+    GICR &= ~(1<<INT1);
 }
 
-void int0_interrupt_routine(){
+void int1_interrupt_routine(){
     char error_m=mcp2515_read(MCP_CANINTF);
     if (error_m & (1<<MCP_RX0IF)){
         
         CAN_read(CAN_RX_DATA);
         oled_goto_page_column(7, 0);
-        oled_print(CAN_RX_DATA);
+        printf("%d",CAN_RX_DATA);
     }
-    GICR |= (1<<INT0);
+    GICR |= (1<<INT1);
     return;
 }

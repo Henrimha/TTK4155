@@ -1,4 +1,4 @@
-#include <CAN_test.h>
+#include <tests/CAN_test.h>
 
 
 void CAN_test(char* rData){

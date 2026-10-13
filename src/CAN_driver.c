@@ -1,36 +1,50 @@
 #include "CAN_driver.h"
 #include "MCP2515.h"
+#include "mcp2515_driver.h"
 
 // #define MCP_RESET ((1<<7)|(1<<6))
 #define READ ((1<<1)|(1<<0))
-#define READ_RX_BUFFER (0b10010010)
+#define MCP_READ_RX_BUFFER (0b10010010)
+#define MCP_LOAD_TX_BUFFER ( 0b01000000) //Buffer 0 ink identefier
 #define WRITE (1<<1)
 #define READ_STATUS ((1<<7)|(1<<5))
 // #define RX_STATUS (0b10110000)
 #define BIT_MODIFY (0b00000101)
 #define CANCTRL (0b00001111)
 #define DUMMY_ADRESS (0b00000000)
+#define MCP_TXRTSCRTL (0x0D)
 void CAN_init(){
     //Need to delay 128 clock cycles
     //For now set after configuration state, loopback mode: when connecting others use normal mode
-    char data[] = {BIT_MODIFY, CANCTRL, 0b11100011, 0b01000000};
-    SPI_array_send(data, 4, CAN_CONTROLLER);
-    data* = {BIT_MODIFY, TXRTSCRTL, 0b00000111, 0x00}; //Disable requesting message transmission of the T buffers on the pins, they are input pins
-    SPI_array_send(data,4,CAN_CONTROLLER);
-    data*={BIT_MODIFY,RXB0CTRL,0b01101110,0b01100000}; //No filters, recieve all messages. Will get data up to an error, No remote transfer request recieved, no rollover, 
-    SPI_array_send(data,4,CAN_CONTROLLER);
+    // char data[4] = {BIT_MODIFY, CANCTRL, 0b11100011, 0b01000000};
+    // SPI_array_send(data, CAN_CONTROLLER, 4);
+    // char data1[4] = {BIT_MODIFY, MCP_TXRTSCRTL, 0b00000111, 0x00}; //Disable requesting message transmission of the T buffers on the pins, they are input pins
+    // SPI_array_send(data1,CAN_CONTROLLER, 4);
+    // char data2[4]={BIT_MODIFY,MCP_RXB0CTRL,0b01101110,0b01100000}; //No filters, recieve all messages. Will get data up to an error, No remote transfer request recieved, no rollover, 
+    // SPI_array_send(data2,CAN_CONTROLLER, 4);
     //data={BIT_MODIFY,CANINTE, 0b00000001,0b000000001} //set RX0IE to enable interrupt on recieved message
-    data*={BIT_MODIFY, BFPCTRL, 0b0000 1100,0x00}; //RX0BF and RX1BF are set to high impedance, unused
-    SPI_array_send(data, 4, CAN_CONTROLLER);
-    data*={BIT_MODIFY, CNF1, 0b00111111,0x00};
-    SPI_array_send(data,4,CAN_CONTROLLER);
-    data*={BIT_MODIFY, CNF2, 0b11000000,0b10000000}; //BTLMODE ps2 is automaticly set, bus is only sampled once
-    SPI_array_send(data,4,CAN_CONTROLLER);    
+    // char data3[4]={BIT_MODIFY, MCP_TX01_INT, 0b00001100,0x00}; //RX0BF and RX1BF are set to high impedance, unused
+    // SPI_array_send(data3,  CAN_CONTROLLER, 4);
+    // char data4[4]={BIT_MODIFY, MCP_CNF1, 0b00111111,0x00};
+    // SPI_array_send(data4,CAN_CONTROLLER, 4);
+    // char data5[4]={BIT_MODIFY, MCP_CNF2, 0b11000000,0b10000000}; //BTLMODE ps2 is automaticly set, bus is only sampled once
+    // SPI_array_send(data5,CAN_CONTROLLER, 4);    
 
 
     //new CAN init
-    mcp2515_bit_modify(MCP_RXB0CTRL, 0b01100100,0b01100000); //No filters, recieve all messages. Will get data up to an error, No remote transfer request recieved, no rollover,
-    mcp2515_bit_modify(CNF1, 0b00111111,0x00);
+    //mcp2515_bit_modify(CANCTRL, 0b11100011, 0b01000000);
+    mcp2515_bit_modify(MCP_TXRTSCRTL, 0b00000111, 0x00); // Disable requesting message transmission of the T buffers on the pins, they are input pins
+    mcp2515_bit_modify(MCP_RXB0CTRL, 0b01100100, 0b01100000); // No filters, recieve all messages. Will get data up to an error, No remote transfer request recieved, no rollover,
+    mcp2515_bit_modify(MCP_TX01_INT, 0b00001100, 0x00); // RX0BF and RX1BF are set to high impedance, unused
+    mcp2515_bit_modify(MCP_CNF1, 0b00111111, 0x00);
+    mcp2515_bit_modify(MCP_CNF2, 0b11000000, 0b10000000); // BTLMODE ps2 is automaticly set, bus is only sampled once
+    mcp2515_bit_modify(MCP_CANINTE, 0b00000001,0b000000001);
+    //mcp2515_bit_modify(MCP_CNF3, )
+
+
+
+    mcp2515_bit_modify(MCP_CANCTRL, 0b11100011, MODE_LOOPBACK); // sets F_clkout to System clock/1
+
 
     // TODO: Mangler CNF 1 2 og 3. Usikker på frekvens til CAN kontroller, 16 eller 4,9 osv. 
     // Den fysiske man skal koble på. Også er det avhengig av hva CNF skal være. 
@@ -61,24 +75,97 @@ void CAN_init(){
     //wait 128 clock cycles
 /*
     wait 128 TOSC for oscillator
-    will be in config mode
+    will be in config modeBFPCTRL
     provide reset
 */
 
 }
 
 void CAN_read(char* rData){
-    char data[]={READ_RX_BUFFER,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-    SPI_array_transmit(data,CAN_CONTROLLER,9,rData);
+    char data[9]={MCP_READ_RX_BUFFER,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
+    SPI_array_transmit(data,CAN_CONTROLLER,9,data);
+
+    for (int i=0; i<8; i++){
+        rData[i]=data[i+1];
+    }
     return;
 }
-
+/*
 void CAN_send(char* rData){
-    char data[9]={LOAD_TX_BUFFER,rData};
+    char data[9];
+    data[0]=MCP_LOAD_TX_BUFFER;
+    for (int i =1; i<9; i++){
+        data[i]=rData[i-1];
+    }
+    SPI_array_send(data, CAN_CONTROLLER, 9);
+    return;
+}*/
+
+
+//FUNGER PÅ ETT ELLER ANNET VIS
+// #define CAN_ID 0x123
+
+// void CAN_send(const char *payload) //Identifier 
+// {
+//     char data[14];
+
+//     data[0] = MCP_LOAD_TX_BUFFER;
+
+//     // Standard 11-bit CAN identifier: 0x123
+//     data[1] = (CAN_ID >> 3) & 0xFF;       // SIDH
+//     data[2] = (CAN_ID & 0x07) << 5;       // SIDL
+//     data[3] = 0x00;                       // EID8
+//     data[4] = 0x00;                       // EID0
+//     data[5] = 8;                           // DLC
+
+//     // Eight payload bytes
+//     for (int i = 0; i < 8; i++) {
+//         data[i + 6] = (char)payload[i];
+//     }
+
+//     // Verify the argument order against SPI_driver.h.
+//     SPI_array_send(data, CAN_CONTROLLER, 14);
+
+//     // Request transmission using TX buffer 0.
+//     char rts = 0x81; 01000001
+//     SPI_array_send(&rts, CAN_CONTROLLER, 1);
+// }
+
+#define MCP_TXB0SIDH 0x31
+#define MCP_TXB0SIDL 0x32
+
+//identefier 0x123 0000 0001 0010 0011, 11 bit, 1 mask 0000000001 filter bit1 = 1 0x123 
+
+void CAN_send(uint16_t identifier, char length, char RTR, char *sData){
+
+
+    while((MCP_TXB0CTRL & (1<<3))){
+        printf("Prover a sende mens TXREQ=1\n\r");
+        _delay_ms(10);
+    }
+    char data[16];
+    data[0] = MCP_LOAD_TX_BUFFER;
+    data[1] = 0b00000000; //Lowest priority
+    data[2] = (identifier >> 3) & 0xFF; 
+    data[3] = (identifier & 0x07) <<5; 
+    data[4] &= ~(1<<3);
+    data[5] = 0b00000000;
+    data[6] = 0b00000000;
+    if (RTR){data[6] |= 1<<6;}
+    else {data[6] &= ~(1<<6);}
+    data[6]+=length;
+  
+    for (int i=0; i<length; i++){
+        data[7+i]=sData[i];
+    }
+
+    SPI_array_send (data, CAN_CONTROLLER, (7+length));
+
+    mcp2515_bit_modify(MCP_TXB0CTRL, (1<<3), (1<<3)); //Buffer is currently pending transmission
+  
+
 }
-
-
 
 
 // from lab presentation
