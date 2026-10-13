@@ -91,7 +91,7 @@ void CAN_send(char* rData){
 
 //identefier 0x123 0000 0001 0010 0011, 11 bit, 1 mask 0000000001 filter bit1 = 1 0x123 
 //Automatisk laveste priority
-void CAN_send(uint16_t identifier, char length, char RTR, char *sData){
+void CAN_send_extended(uint16_t identifier, char length, char RTR, char *sData){
 
 
     while (mcp2515_read(MCP_TXB0CTRL) & (1<<3)){
