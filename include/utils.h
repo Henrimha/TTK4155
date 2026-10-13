@@ -7,6 +7,7 @@
 #include <avr/interrupt.h>
 #include <stdio.h>
 #include <avr/sleep.h>
+#include <stdint.h>
 
 extern volatile char INT1_FLAG;
 

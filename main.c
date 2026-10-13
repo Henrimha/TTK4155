@@ -15,11 +15,21 @@
 #include "CAN_driver.h"
 #include "mcp2515_driver.h"
 
+
+
+
 // #define FOSC 1843200// Clock Speed
 #define FOSC 4915200UL// Clock Speed
 
 #define BAUD 9600
 #define MYUBRR FOSC/16/BAUD-1
+// volatile uint8_t can_interrupt_flag = 0;
+
+// ISR(INT1_vect)
+// {
+//     can_interrupt_flag = 1;
+// }
+
 
 int main(void) {
     fdevopen(USART_put, USART_get);
@@ -30,43 +40,72 @@ int main(void) {
     oled_init();
     mcp2515_init();
     CAN_init();
-    interrrupt_init(){;
+    interrrupt_init();
     
-    cli();
+    // cli();
     // ADC_test();
     // SRAM_test();
     // oled_print("SuG BalLE og pikk");
     // joystick_test();
     //buttons_test();
     //menu_state_machine();
+    // while(1){
+    //     char data[9] = "Martin T";
+    //     CAN_send(8, data);
+    //     // Vent på at INT1-ISR-en setter flagget
+    //     while (!can_interrupt_flag)
+    //         {
+    //         }
+    //     // Nullstill flagget
+    //     can_interrupt_flag = 0;
+    //     // Bekreft at interruptet ble utløst
+    //     printf("INT1 ble utløst!\r\n");
 
-    set_sleep_mode(SLEEP_MODE_PWR_SAVE);
+    //     // Les mottatt melding
+    //     char received_data[9] = {0};
+    //     CAN_read(received_data);
+
+    //     // Skriv ut meldingen
+    //     printf("Mottatt: %s\r\n", received_data);
+
+    //     _delay_ms(500);
+    // }
+    
+
+    // set_sleep_mode(SLEEP_MODE_PWR_SAVE);
+    // while (1){
+    //     char data[9] = "Martin T";
+    //     CAN_send(8, data);
+    //     int i=0;
+    //     while (PIND & (1<<PD3)){i++;};
+    //     CAN_read(data);
+    //     printf("%s",data);
+
+
+    //     char data1[9] = "Henrik H";
+    //     CAN_send(8, data1);
+    //     i=0;
+    //     while (PIND & (1<<PD3)){i++;};
+    //     CAN_read(data1);
+    //     printf("%s",data1);
+
+    //     _delay_ms(100);
+    // }
     while (1){
-        char data[9] = "Martin T";
-        CAN_send(0x023, 8, 0, data);
-        int i=0;
-        while (PIND & (1<<PD3)){i++;};
-        CAN_read(data);
-        printf("%s",data);
+        char data[9] = "MartinTo";
+        CAN_send(8, data);
 
-
-        char data1[9] = "Henrik H";
-        CAN_send(0x023, 8, 0, data1);
-        i=0;
-        while (PIND & (1<<PD3)){i++;};
-        CAN_read(data1);
-        printf("%s",data1);
-
-        _delay_ms(100);
-    }
-    while (1){
         if(INT1_FLAG){
             int1_interrupt_routine();
+            printf("INTT1 ble utløst!!\r\n");
             INT1_FLAG=0;
+
         }
-        sleep_enable();
-        sleep_cpu();  
-        sleep_disable();
+        // sleep_enable();
+        // sleep_cpu();  
+        // sleep_disable();
+        printf("vaaa ble utløst!!\r\n");
+
     }
     
     return 0;

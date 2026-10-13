@@ -28,7 +28,7 @@ void interrrupt_init(){
     //Interrupt setup
     DDRD &= ~(1<<PD3);  // PD3/INT1 as input
     MCUCR &= ~(1<<ISC10);
-    MCUCR &= ~(1<<ISC11); // Interrupt on INT0 is low
+    MCUCR |= (1<<ISC11); // Interrupt on INT0 is low (falling flank)
     GICR |= (1<<INT1); //Enable interrupt for INT1
     sei();
 }
@@ -85,17 +85,22 @@ int USART_get(FILE *stream){
 
 ISR(INT1_vect){
     INT1_FLAG=1;
-    GICR &= ~(1<<INT1);
+    // GICR &= ~(1<<INT1);
 }
 
 void int1_interrupt_routine(){
     char error_m=mcp2515_read(MCP_CANINTF);
-    if (error_m & (1<<MCP_RX0IF)){
+    printf("CANINTF = 0x%02X\r\n", error_m);
+    if (error_m & 1){
         
+        printf("HMMMMM   ");
         CAN_read(CAN_RX_DATA);
         oled_goto_page_column(7, 0);
-        printf("%d",CAN_RX_DATA);
+        // printf("%d",CAN_RX_DATA);
+        
     }
+    printf("HAAaMMMMM  ");
+
     GICR |= (1<<INT1);
     return;
 }

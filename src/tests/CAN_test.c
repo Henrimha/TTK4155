@@ -1,10 +1,10 @@
 #include <tests/CAN_test.h>
 
 
-void CAN_test(char* rData){
+// void CAN_test(char* rData){
 
-    CAN_send(rData);
+//     CAN_send(rData);
 
 
-}
+// }
 
