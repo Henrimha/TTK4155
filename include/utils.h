@@ -8,6 +8,6 @@
 #include <stdio.h>
 #include <avr/sleep.h>
 
-extern volatile char INT0_FLAG;
+extern volatile char INT1_FLAG;
 
 extern volatile char CAN_RX_DATA[8];

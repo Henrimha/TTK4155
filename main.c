@@ -13,6 +13,7 @@
 #include "menu.h"
 #include "tests/joystick_test.h"
 #include "CAN_driver.h"
+#include "mcp2515_driver.h"
 
 // #define FOSC 1843200// Clock Speed
 #define FOSC 4915200UL// Clock Speed
@@ -27,21 +28,39 @@ int main(void) {
     external_memory_init();
     SPI_Init();
     oled_init();
+    mcp2515_init();
     CAN_init();
-
+    cli();
     // ADC_test();
     // SRAM_test();
     // oled_print("SuG BalLE og pikk");
     // joystick_test();
     //buttons_test();
-    menu_state_machine();
+    //menu_state_machine();
 
     set_sleep_mode(SLEEP_MODE_PWR_SAVE);
-    
     while (1){
-        if(INT0_FLAG){
-            int0_interrupt_routine();
-            INT0_FLAG=0;
+        char data[9] = "Martin T";
+        CAN_send(data);
+        int i=0;
+        while (PIND & (1<<PD3)){i++;};
+        CAN_read(data);
+        printf("%s",data);
+
+
+        char data1[9] = "Henrik H";
+        CAN_send(data1);
+        i=0;
+        while (PIND & (1<<PD3)){i++;};
+        CAN_read(data1);
+        printf("%s",data1);
+
+        _delay_ms(100);
+    }
+    while (1){
+        if(INT1_FLAG){
+            int1_interrupt_routine();
+            INT1_FLAG=0;
         }
         sleep_enable();
         sleep_cpu();  
