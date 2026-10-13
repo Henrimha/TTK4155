@@ -13,12 +13,7 @@ void USART_Init( unsigned int ubrr )
     /* Set frame format: 8data, 2stop bit */
     UCSR0C = (1<<URSEL0)|(0<<UMSEL0)|(1<<USBS0)|(1<<UPM01)|(0<<UPM00)|(1<<USBS0)|(3<<UCSZ00); // Akksesser UCSRC registeret. Velger asynkront, even parity. 2 stop bit.  8-bit character size. 
 
-    //Interrupt setup
-    DDRD &= ~(1<<PD2);  // PD2/INT0 as input
-    MCUCR &= ~(1<<ISC01);
-    MCUCR &= ~(1<<ISC00); // Interrupt on falling edge of INT0
-    GICR = (1<<INT0); //Enable interrupt for INT0
-    sei();
+    
     /*
     Finne f_osc pga UBRR0H 
     U2X = 1 eller 0?? bleeleel
@@ -28,6 +23,15 @@ void USART_Init( unsigned int ubrr )
     
 
 } //copied from ATmega162 datasheet, page 172
+
+void interrrupt_init(){
+    //Interrupt setup
+    DDRD &= ~(1<<PD2);  // PD2/INT0 as input
+    MCUCR &= ~(1<<ISC01);
+    MCUCR &= ~(1<<ISC00); // Interrupt on INT0 is low
+    GICR |= (1<<INT0); //Enable interrupt for INT0
+    sei();
+}
 
 //assumes 8 bit data
 void USART_Transmit( unsigned char data)

@@ -28,6 +28,8 @@ int main(void) {
     SPI_Init();
     oled_init();
     CAN_init();
+    interrrupt_init(){;
+    
 
     // ADC_test();
     // SRAM_test();
