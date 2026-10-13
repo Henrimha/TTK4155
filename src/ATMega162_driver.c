@@ -85,7 +85,7 @@ int USART_get(FILE *stream){
 
 ISR(INT1_vect){
     INT1_FLAG=1;
-    // GICR &= ~(1<<INT1);
+    GICR &= ~(1<<INT1);
 }
 
 void int1_interrupt_routine(){
@@ -93,13 +93,16 @@ void int1_interrupt_routine(){
     printf("CANINTF = 0x%02X\r\n", error_m);
     if (error_m & 1){
         
-        printf("HMMMMM   ");
         CAN_read(CAN_RX_DATA);
+        for (int i=0; i<8;i++){
+        printf("%c", CAN_RX_DATA[i]);
+        }
+        printf("\n\r");
+
         oled_goto_page_column(7, 0);
-        // printf("%d",CAN_RX_DATA);
+        printf("%d",CAN_RX_DATA);
         
     }
-    printf("HAAaMMMMM  ");
 
     GICR |= (1<<INT1);
     return;
