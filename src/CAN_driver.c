@@ -14,70 +14,24 @@
 #define DUMMY_ADRESS (0b00000000)
 #define MCP_TXRTSCRTL (0x0D)
 void CAN_init(){
-    //Need to delay 128 clock cycles
-    //For now set after configuration state, loopback mode: when connecting others use normal mode
-    // char data[4] = {BIT_MODIFY, CANCTRL, 0b11100011, 0b01000000};
-    // SPI_array_send(data, CAN_CONTROLLER, 4);
-    // char data1[4] = {BIT_MODIFY, MCP_TXRTSCRTL, 0b00000111, 0x00}; //Disable requesting message transmission of the T buffers on the pins, they are input pins
-    // SPI_array_send(data1,CAN_CONTROLLER, 4);
-    // char data2[4]={BIT_MODIFY,MCP_RXB0CTRL,0b01101110,0b01100000}; //No filters, recieve all messages. Will get data up to an error, No remote transfer request recieved, no rollover, 
-    // SPI_array_send(data2,CAN_CONTROLLER, 4);
-    //data={BIT_MODIFY,CANINTE, 0b00000001,0b000000001} //set RX0IE to enable interrupt on recieved message
-    // char data3[4]={BIT_MODIFY, MCP_TX01_INT, 0b00001100,0x00}; //RX0BF and RX1BF are set to high impedance, unused
-    // SPI_array_send(data3,  CAN_CONTROLLER, 4);
-    // char data4[4]={BIT_MODIFY, MCP_CNF1, 0b00111111,0x00};
-    // SPI_array_send(data4,CAN_CONTROLLER, 4);
-    // char data5[4]={BIT_MODIFY, MCP_CNF2, 0b11000000,0b10000000}; //BTLMODE ps2 is automaticly set, bus is only sampled once
-    // SPI_array_send(data5,CAN_CONTROLLER, 4);    
+    //Need to delay 128 clock cycles 
 
+    //The clock is 16MHz, each bit is 2us, this is the half the limit og the MCP2551 which has a limit of 1Mb/s
 
     //new CAN init
-    //mcp2515_bit_modify(CANCTRL, 0b11100011, 0b01000000);
     mcp2515_bit_modify(MCP_TXRTSCRTL, 0b00000111, 0x00); // Disable requesting message transmission of the T buffers on the pins, they are input pins
     mcp2515_bit_modify(MCP_RXB0CTRL, 0b01100100, 0b01100000); // No filters, recieve all messages. Will get data up to an error, No remote transfer request recieved, no rollover,
     mcp2515_bit_modify(MCP_TX01_INT, 0b00001100, 0x00); // RX0BF and RX1BF are set to high impedance, unused
-    mcp2515_bit_modify(MCP_CNF1, 0b00111111, 0x00);
-    mcp2515_bit_modify(MCP_CNF2, 0b11000000, 0b10000000); // BTLMODE ps2 is automaticly set, bus is only sampled once
-    mcp2515_bit_modify(MCP_CANINTE, 0b00000001,0b000000001);
-    //mcp2515_bit_modify(MCP_CNF3, )
+    mcp2515_bit_modify(MCP_CNF1, 0xff, 0b00000000); //SJW=1, short distance and good oscilators. BRP=0, so TQ=125ns
+    mcp2515_bit_modify(MCP_CNF2, 0xff, (1<<7)|(0<<6)|(0b110<<3)|(0b01<<0)); // BTLMODE=1, sample once, PS1=6+1=7, Phase seg for distance=2
+    mcp2515_bit_modify(MCP_CNF3, 0b00000111, 0x05); //PS2=5+1=6
+    //SyncSeg + PropSeg+PS1+PS2=16, sample at 10/16=62.5%
+    mcp2515_bit_modify(MCP_CANINTE, 0b00000001,0b000000001); //enable interrupt
 
 
 
-    mcp2515_bit_modify(MCP_CANCTRL, 0b11100011, MODE_LOOPBACK); // sets F_clkout to System clock/1
+    mcp2515_bit_modify(MCP_CANCTRL, 0b11100011, MODE_LOOPBACK); // sLoopbak mode set
 
-
-    // TODO: Mangler CNF 1 2 og 3. Usikker på frekvens til CAN kontroller, 16 eller 4,9 osv. 
-    // Den fysiske man skal koble på. Også er det avhengig av hva CNF skal være. 
-    // Fjern lt over i CAN init. Og legg til CNF under new CAN init. 
-
-    
-   
-    // REQOP = REQuest OPeration mode bits
-    // loopback mode (REQOP<2:0> = 010)
-    // CANCTRL &= ~(1 << REQOP2);
-    // CANCTRL |= (1 << REQOP1);
-    // CANCTRL &= ~(1 << REQOP0);
-    // // normal mode (REQOP<2:0> = 000)
-    // CANCTRL &= ~(1 << REQOP2);
-    // CANCTRL &= ~(1 << REQOP1);
-    // CANCTRL &= ~(1 << REQOP0);
-    
-    // ABAT = ABort All pending Transmissions
-    // OSM = One Shot Mode
-    // CLKEN = CLKout pin ENable bit
-    // CLKPRE = CLKout pin PREscaler bits
-    // CANCTRL &= ~(1 << CLKPRE1);
-    // CANCTRL &= ~(1 << CLKPRE0);
-
-
-
-    //Reset command
-    //wait 128 clock cycles
-/*
-    wait 128 TOSC for oscillator
-    will be in config modeBFPCTRL
-    provide reset
-*/
 
 }
 

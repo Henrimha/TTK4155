@@ -30,7 +30,7 @@ int main(void) {
     oled_init();
     mcp2515_init();
     CAN_init();
-    interrrupt_init(){;
+    interrrupt_init();
     
     cli();
     // ADC_test();
