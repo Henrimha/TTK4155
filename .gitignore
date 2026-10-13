@@ -1,5 +1,4 @@
 .vscode
-build/
 openocd/
 node1/build/
 node2/build/
