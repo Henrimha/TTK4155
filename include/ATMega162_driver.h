@@ -18,3 +18,5 @@ int USART_get(FILE *stream);
 unsigned char USART_Receive( void );
 
 void int1_interrupt_routine();
+
+void interrrupt_init();
