@@ -7,4 +7,4 @@
 
 void CAN_init();
 void CAN_read(char* rData);
-void CAN_send(const char* rData);
+void CAN_send(uint16_t identifier, char length, char RTR, char *sData);

@@ -136,33 +136,33 @@ void CAN_send(char* rData){
 #define MCP_TXB0SIDL 0x32
 
 //identefier 0x123 0000 0001 0010 0011, 11 bit, 1 mask 0000000001 filter bit1 = 1 0x123 
-
+//Automatisk laveste priority
 void CAN_send(uint16_t identifier, char length, char RTR, char *sData){
 
 
-    while((MCP_TXB0CTRL & (1<<3))){
+    while (mcp2515_read(MCP_TXB0CTRL) & (1<<3)){
         printf("Prover a sende mens TXREQ=1\n\r");
         _delay_ms(10);
     }
-    char data[16];
-    data[0] = MCP_LOAD_TX_BUFFER;
-    data[1] = 0b00000000; //Lowest priority
-    data[2] = (identifier >> 3) & 0xFF; 
-    data[3] = (identifier & 0x07) <<5; 
-    data[4] &= ~(1<<3);
-    data[5] = 0b00000000;
-    data[6] = 0b00000000;
-    if (RTR){data[6] |= 1<<6;}
-    else {data[6] &= ~(1<<6);}
-    data[6]+=length;
+    char data[14];
+    data[0] = MCP_LOAD_TX_BUFFER; 
+    data[1] = (identifier >> 3) & 0xFF; 
+    data[2] = (identifier & 0x07) <<5; 
+    // data[2] &= ~(1<<3);
+    data[3] = 0b00000000;
+    data[4] = 0b00000000;
+    data[5] = length & 0x0F;
+    if (RTR){data[5] |= 1<<6;} 
+    
   
     for (int i=0; i<length; i++){
-        data[7+i]=sData[i];
+        data[6+i]=sData[i];
     }
 
-    SPI_array_send (data, CAN_CONTROLLER, (7+length));
-
-    mcp2515_bit_modify(MCP_TXB0CTRL, (1<<3), (1<<3)); //Buffer is currently pending transmission
+    SPI_array_send (data, CAN_CONTROLLER, (6+length));
+    char rts = 0x81;
+    SPI_array_send(&rts, CAN_CONTROLLER, 1);
+    // mcp2515_bit_modify(MCP_TXB0CTRL, (1<<3), (1<<3)); //Buffer is currently pending transmission
   
 
 }

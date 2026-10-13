@@ -41,7 +41,7 @@ int main(void) {
     set_sleep_mode(SLEEP_MODE_PWR_SAVE);
     while (1){
         char data[9] = "Martin T";
-        CAN_send(data);
+        CAN_send(0x023, 8, 0, data);
         int i=0;
         while (PIND & (1<<PD3)){i++;};
         CAN_read(data);
@@ -49,7 +49,7 @@ int main(void) {
 
 
         char data1[9] = "Henrik H";
-        CAN_send(data1);
+        CAN_send(0x023, 8, 0, data1);
         i=0;
         while (PIND & (1<<PD3)){i++;};
         CAN_read(data1);
