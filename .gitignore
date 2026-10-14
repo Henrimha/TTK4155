@@ -1,4 +1,4 @@
 .vscode
-build/
 openocd/
-.gitignore
+node1/build/
+node2/build/
