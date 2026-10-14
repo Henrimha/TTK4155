@@ -8,7 +8,7 @@ void interrupt_test(){
         
         if(INT1_FLAG){
             int1_interrupt_routine();
-            printf("INT1 ble utløst!!\r\n");
+            printf("INT1TT ble utløst!!\r\n");
             INT1_FLAG=0;
             CAN_send(8, data);
             
