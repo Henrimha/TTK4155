@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdarg.h>
-#include "include/can.h"
+#include "can.h"
 #include "sam.h"
+#include "uart.h"
 
 /*
  * Remember to update the Makefile with the (relative) path to the uart.c file.
@@ -13,7 +14,8 @@
  * apt or your favorite package manager.
  */
 //#include "../path_to/uart.h"
-
+#define BAUDRATE 9600
+#define F_CPU 0
 int main()
 {
     SystemInit();
@@ -24,8 +26,8 @@ int main()
     init.phase1=6; //=7
     init.phase2=5; //=6
     init.smp=0; //Sample only once
-
     can_init(init,0); //interrupts disabled
+    uart_init(F_CPU,BAUDRATE); //Uart init
 
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
 
