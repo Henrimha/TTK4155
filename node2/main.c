@@ -22,7 +22,7 @@ int main()
     CanInit init;
     init.sjw=0; //sjw=1
     init.propag=2; //=1
-    init.brp=1; //needs to be changed after knowing the timing
+    init.brp=F_CPU/(4*10^6)-1; //needs to be changed after knowing the timing
     init.phase1=6; //=7
     init.phase2=5; //=6
     init.smp=0; //Sample only once
