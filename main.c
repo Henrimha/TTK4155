@@ -14,6 +14,7 @@
 #include "tests/joystick_test.h"
 #include "CAN_driver.h"
 #include "mcp2515_driver.h"
+#include "tests/interrupt_test.h"
 
 
 
@@ -41,36 +42,19 @@ int main(void) {
     mcp2515_init();
     CAN_init();
     interrrupt_init();
+    interrupt_test();
+    printf("shallom allekom");
     
     // cli();
     // ADC_test();
     // SRAM_test();
     // oled_print("SuG BalLE og pikk");
     // joystick_test();
-    //buttons_test();
-    //menu_state_machine();
-    // while(1){
-    //     char data[9] = "Martin T";
-    //     CAN_send(8, data);
-    //     // Vent på at INT1-ISR-en setter flagget
-    //     while (!can_interrupt_flag)
-    //         {
-    //         }
-    //     // Nullstill flagget
-    //     can_interrupt_flag = 0;
-    //     // Bekreft at interruptet ble utløst
-    //     printf("INT1 ble utløst!\r\n");
+    // buttons_test();
+    // menu_state_machine();
+    // usart_transmit_polling('a');
 
-    //     // Les mottatt melding
-    //     char received_data[9] = {0};
-    //     CAN_read(received_data);
 
-    //     // Skriv ut meldingen
-    //     printf("Mottatt: %s\r\n", received_data);
-
-    //     _delay_ms(500);
-    // }
-    
 
     // set_sleep_mode(SLEEP_MODE_PWR_SAVE);
     // while (1){
@@ -91,24 +75,25 @@ int main(void) {
 
     //     _delay_ms(100);
     // }
-    char data[9] = "MartinTo";
-    CAN_send(8, data);
-    while (1){
-        // _delay_us(50);
 
-        if(INT1_FLAG){
-            int1_interrupt_routine();
-            printf("INTT1 ble utløst!!\r\n");
-            INT1_FLAG=0;
-            CAN_send(8, data);
+    // char data[9] = "MartinTo";
+    // CAN_send(8, data);
+    // while (1){
+    //     _delay_us(50);
 
-        }
-        sleep_enable();
-        sleep_cpu();  
-        sleep_disable();
-        printf("vaaa ble utløst!!\r\n");
+    //     if(INT1_FLAG){
+    //         int1_interrupt_routine();
+    //         printf("INTT1 ble utløst!!\r\n");
+    //         INT1_FLAG=0;
+    //         CAN_send(8, data);
 
-    }
+    //     }
+    //     sleep_enable();
+    //     sleep_cpu();  
+    //     sleep_disable();
+    //     printf("vaaa ble utløst!!\r\n");
+
+    // }
     
     return 0;
 }
