@@ -16,7 +16,12 @@ void PWM_init(){
     PWM_CMR0 &= ~(1 << PWM_CMR_DTE); // disable Dead time
 
     PWM_CPRD1 = 25 000; //Øvre grense for 
-     
+    PWM_CDTY1 = 1875; //Starter i midten
+    PWM_SCM &= ~(1<<PWM_SCM_SYNC1); // Ikke synkron channel
+    PWM_SCM &= ~(1<<PWM_SCM_UPDM_Pos); // The WRDY flag and the PDC transfer request are never set to 1.
+    PWM_SCM &= ~(1<<PWM_SCM_UPDM_Pos+1); //The WRDY flag and the PDC transfer request are never set to 1.
+
+
 
 
 
@@ -62,7 +67,6 @@ void PWM_init(){
      Enable of the PWM channels (writing CHIDx in the PWM_ENA register)
     */
 }
-
 
 void PWM_set(uint8_t value){
     int duty_cycle; //1125
