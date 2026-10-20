@@ -1,7 +1,38 @@
 #include "PWM_driver.h"
 
 void PWM_init(){
-    //enable PWM in the PMC
+    PMC_PCER1 = (1 << 4);//enable PWM in the PMC
+    PWM_WPCR |= (0x50574DUL << PWM_WPCR_WPKEY_Pos);  //PWM in ascii
+    PWM_WPCR |= PWM_WPCR_WPRG0; //sKlokke skløtte register
+    PWM_WPCR &= ~(1 << PWM_WPCR_WPCMD_Pos); // Disable write protection
+
+    // PWM_CLK |= (1<< PWM_CLK_DIVA_Pos);  //Deler ikke på DIV, bare PRA (2-ern)
+    // PWM_CLK |= (0b0110 << PWM_CLK_PREA_Pos); //deler på 64
+    PWM_CMR0 &= ~0xF;
+    PWM_CMR0 |= PWM_CMR_CPRE_MCK_DIV_64;
+    PWM_CMR0 &= ~(1<< PWM_CMR_CALG); // Left alligment
+    PWM_CMR0 |= (1 << PWM_CMR_CPOL); //Start at high level
+    PWM_CMR0 &= ~(1 << PWM_CMR_CES); // trlig irrelevant:)  counter event selection
+    PWM_CMR0 &= ~(1 << PWM_CMR_DTE); // disable Dead time
+
+    PWM_CPRD1 = 25 000; //Øvre grense for 
+     
+
+
+
+
+
+
+
+    // Husk å sette pins fra I/O til PWM
+    // PA8= PWMH0 
+    // PA9 = PWMH3
+    // PB13 = PWMH1
+    PWM_ENA=(1<<CHID1); //enable channel register 1
+
+
+
+
     /*
     Unlock User Interface by writing the WPCMD field in the PWM_WPCR Register.
      Configuration of the clock generator (DIVA, PREA, DIVB, PREB in the PWM_CLK register if required).
