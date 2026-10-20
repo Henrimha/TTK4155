@@ -22,7 +22,7 @@ void CAN_init(){
     mcp2515_bit_modify(MCP_TXRTSCRTL, 0b00000111, 0x00); // Disable requesting message transmission of the T buffers on the pins, they are input pins
     mcp2515_bit_modify(MCP_RXB0CTRL, 0b01100100, 0b01100000); // No filters, recieve all messages. Will get data up to an error, No remote transfer request recieved, no rollover,
     mcp2515_bit_modify(MCP_TX01_INT, 0b00001100, 0x00); // RX0BF and RX1BF are set to high impedance, unused
-    mcp2515_bit_modify(MCP_CNF1, 0xff, 0b00000000); //SJW=1, short distance and good oscilators. BRP=0, so TQ=125ns
+    mcp2515_bit_modify(MCP_CNF1, 0xff, 0b00000011); //SJW=1, short distance and good oscilators. BRP=3 meaning, so TQ=500ns
     mcp2515_bit_modify(MCP_CNF2, 0xff, (1<<7)|(0<<6)|(0b110<<3)|(0b01<<0)); // BTLMODE=1, sample once, PS1=6+1=7, Phase seg for distance=2
     mcp2515_bit_modify(MCP_CNF3, 0b00000111, 0x05); //PS2=5+1=6
     //SyncSeg + PropSeg+PS1+PS2=16, sample at 10/16=62.5%
@@ -30,7 +30,9 @@ void CAN_init(){
 
 
 
-    mcp2515_bit_modify(MCP_CANCTRL, 0b11100011, MODE_LOOPBACK); // sLoopbak mode set
+    // mcp2515_bit_modify(MCP_CANCTRL, 0b11100011, MODE_LOOPBACK); // sLoopbak mode set
+    mcp2515_bit_modify(MCP_CANCTRL, 0b11100011, MODE_NORMAL); // sNormal mode set
+
 
 
 }

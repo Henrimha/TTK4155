@@ -1,4 +1,5 @@
 #include "SPI_driver.h"
+#include "ADC_driver.h"
 static void send(char data);
 static void send_m(char* sData, size_t len, char* rData);
 static void SPI_IO_mode();
@@ -161,6 +162,19 @@ Joystick joystick_read (void){
     PORTB |= (1<<PB4);
 
     return joystick;
+}
+
+Joystick joystick_read_scale (void){
+    Joystick joystick = joystick_read();
+    volatile uint8_t *ADC=(uint8_t*)0x1000;
+
+    ADC[0]=1;
+    Joystick joystick_new;
+    joystick_new.X = scale_axis(ADC[0], 66);
+    joystick_new.Y = scale_axis(ADC[0], 69);
+    joystick_new.btn = joystick.btn;
+    return joystick_new;
+
 }
 
 

@@ -74,3 +74,4 @@ typedef struct{
 }Joystick;
 
 Joystick joystick_read (void);
+Joystick joystick_read_scale (void);

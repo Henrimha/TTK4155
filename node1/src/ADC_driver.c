@@ -13,7 +13,7 @@ void ADC_init(){
     DDRD &=~(1<<PD4);
 }
 
-static uint8_t scale_axis(uint8_t raw, uint8_t min){
+uint8_t scale_axis(uint8_t raw, uint8_t min){
     int16_t v = ((int16_t)raw - min) * 0.562;
     if(v < 0){v = 0;}
     if(v > 100){v = 100;}

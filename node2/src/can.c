@@ -11,7 +11,7 @@ void can_printmsg(CanMsg m){
     for(uint8_t i = 1; i < m.length; i++){
         printf(", %d", m.byte[i]);
     }
-    printf("})\n");
+    printf("})\n\r");
 }
 
 
@@ -111,15 +111,18 @@ uint8_t can_rx(CanMsg* m){
     
 
     
-/*
+
 // Example CAN interrupt handler
 void CAN0_Handler(void){
     char can_sr = CAN0->CAN_SR; 
-    
+
     // RX interrupt
     if(can_sr & (1 << rxMailbox)){
         // Add your message-handling code here
-        can_printmsg(can_rx());
+        CanMsg message;
+        if(can_rx(&message )){
+            can_printmsg(message);
+        }
     } else {
         printf("CAN0 message arrived in non-used mailbox\n\r");
     }
@@ -131,5 +134,7 @@ void CAN0_Handler(void){
     
     NVIC_ClearPendingIRQ(ID_CAN0);
 } 
-*/
 
+ISR(CAN0_vect){
+    CAN0_Handler();
+}

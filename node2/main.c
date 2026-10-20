@@ -17,18 +17,20 @@
  */
 //#include "../path_to/uart.h"
 #define BAUDRATE 9600
-#define F_CPU 0
+#define F_CPU 84000000
 int main()
 {
-    // CanInit init;
-    // init.sjw=0; //sjw=1
-    // init.propag=2; //=1
-    // init.brp=F_CPU/(4*10^6)-1; //needs to be changed after knowing the timing
-    // init.phase1=6; //=7
-    // init.phase2=5; //=6
-    // init.smp=0; //Sample only once
-    // can_init(init,0); //interrupts disabled
-    // uart_init(F_CPU,BAUDRATE); //Uart init
+    SystemInit();
+    WDT->WDT_MR=WDT_MR_WDDIS;
+    CanInit init;
+    init.sjw=0; //sjw=1
+    init.propag=1; //=2
+    init.brp=41; //42
+    init.phase1=6; //=7
+    init.phase2=5; //=6
+    init.smp=0; //Sample only once
+    can_init(init,1); //interrupts enabled
+    uart_init(F_CPU,BAUDRATE); //Uart init
     
     
     PMC->PMC_PCER0 |= (1<<ID_PIOB);
@@ -40,7 +42,6 @@ int main()
     PIOB->PIO_CODR = PIO_PB13;   //clear output data register
     
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
-    SystemInit();
     //Uncomment after including uart above
     //uart_init(/*cpufreq*/, /*baud*/);
     //printf("Hello World\n\r");
