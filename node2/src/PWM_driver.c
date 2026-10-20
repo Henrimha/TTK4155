@@ -1,25 +1,29 @@
 #include "PWM_driver.h"
 
 void PWM_init(){
-    PMC_PCER1 = (1 << 4);//enable PWM in the PMC
-    PWM_WPCR |= (0x50574DUL << PWM_WPCR_WPKEY_Pos);  //PWM in ascii
-    PWM_WPCR |= PWM_WPCR_WPRG0; //sKlokke skløtte register
-    PWM_WPCR &= ~(1 << PWM_WPCR_WPCMD_Pos); // Disable write protection
+    // PMC_PCER = (1 << 4);//enable PWM in the PMC
+    REG_PMC_PCER0 = PMC_PCER0_PID4;
+    REG_PWM_WPCR |= (0x50574DUL << PWM_WPCR_WPKEY_Pos);  //PWM in ascii
+    REG_PWM_WPCR |= PWM_WPCR_WPRG2; //sRegister 2 disable, PCMR osv
+    REG_PWM_WPCR |= PWM_WPCR_WPRG3; //sRegister 3 disable, CPRD
+    REG_PWM_WPCR |= PWM_WPCR_WPRG4; //sRegister 4 disable, Dead time osv
+    REG_PWM_WPCR &= ~(1 << PWM_WPCR_WPCMD_Pos); // Disable write protection 
+    REG_PWM_WPCR &= ~(1 << PWM_WPCR_WPCMD_Pos+1); // Disable write protection 
 
     // PWM_CLK |= (1<< PWM_CLK_DIVA_Pos);  //Deler ikke på DIV, bare PRA (2-ern)
     // PWM_CLK |= (0b0110 << PWM_CLK_PREA_Pos); //deler på 64
-    PWM_CMR0 &= ~0xF;
-    PWM_CMR0 |= PWM_CMR_CPRE_MCK_DIV_64;
-    PWM_CMR0 &= ~(1<< PWM_CMR_CALG); // Left alligment
-    PWM_CMR0 |= (1 << PWM_CMR_CPOL); //Start at high level
-    PWM_CMR0 &= ~(1 << PWM_CMR_CES); // trlig irrelevant:)  counter event selection
-    PWM_CMR0 &= ~(1 << PWM_CMR_DTE); // disable Dead time
+    REG_PWM_CMR0 &= ~0xF;
+    REG_PWM_CMR0 |= PWM_CMR_CPRE_MCK_DIV_64;
+    REG_PWM_CMR0 &= ~(1<< PWM_CMR_CALG); // Left alligment
+    REG_PWM_CMR0 |= (1 << PWM_CMR_CPOL); //Start at high level
+    REG_PWM_CMR0 &= ~(1 << PWM_CMR_CES); // trlig irrelevant:)  counter event selection
+    REG_PWM_CMR0 &= ~(1 << PWM_CMR_DTE); // disable Dead time
 
-    PWM_CPRD1 = 25 000; //Øvre grense for 
-    PWM_CDTY1 = 1875; //Starter i midten
-    PWM_SCM &= ~(1<<PWM_SCM_SYNC1); // Ikke synkron channel
-    PWM_SCM &= ~(1<<PWM_SCM_UPDM_Pos); // The WRDY flag and the PDC transfer request are never set to 1.
-    PWM_SCM &= ~(1<<PWM_SCM_UPDM_Pos+1); //The WRDY flag and the PDC transfer request are never set to 1.
+    REG_PWM_CPRD1 = 25000; //Øvre grense for 
+    REG_PWM_CDTY1 = 1875; //Starter i midten
+    REG_PWM_SCM &= ~(1<<PWM_SCM_SYNC1); // Ikke synkron channel
+    REG_PWM_SCM &= ~(1<<PWM_SCM_UPDM_Pos); // The WRDY flag and the PDC transfer request are never set to 1.
+    REG_PWM_SCM &= ~(1<<PWM_SCM_UPDM_Pos+1); //The WRDY flag and the PDC transfer request are never set to 1.
 
 
 
@@ -33,7 +37,10 @@ void PWM_init(){
     // PA8= PWMH0 
     // PA9 = PWMH3
     // PB13 = PWMH1
-    PWM_ENA=(1<<CHID1); //enable channel register 1
+    // REG_PWM_ENA=(1<<CHID1); //enable channel register 
+    REG_PWM_ENA |= PWM_ENA_CHID1;
+    REG_PWM_WPCR |= (1 << PWM_WPCR_WPCMD_Pos); // enable write protection 
+    REG_PWM_WPCR &= ~(1 << PWM_WPCR_WPCMD_Pos+1); // enable write protection 
 
 
 
@@ -76,6 +83,6 @@ void PWM_set(uint8_t value){
     else {
         duty_cycle=value*(2625-1125)/100+1125;
     }
-    PWM_CDTYUPD=duty_cycle;
+    REG_PWM_CDTYUPD1=duty_cycle;
 
 }

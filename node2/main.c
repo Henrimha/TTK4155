@@ -3,7 +3,7 @@
 #include "can.h"
 #include "sam.h"
 #include "uart.h"
-
+#include "PWM_driver.h"
 
 
 /*
@@ -31,6 +31,7 @@ int main()
     init.smp=0; //Sample only once
     can_init(init,1); //interrupts enabled
     uart_init(F_CPU,BAUDRATE); //Uart init
+    PWM_init();
     
     
     PMC->PMC_PCER0 |= (1<<ID_PIOB);
@@ -46,6 +47,19 @@ int main()
     //uart_init(/*cpufreq*/, /*baud*/);
     //printf("Hello World\n\r");
     
+    while (1){
+
+        PWM_set(20);
+
+        for (int i=0;i<1000000;i++){}
+
+        PWM_set(100);
+        
+        for (int i=0;i<1000000;i++){}
+
+
+    }
+
     while (1)
     {
         /* code */
