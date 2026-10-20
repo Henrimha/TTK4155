@@ -121,7 +121,8 @@ void CAN0_Handler(void){
         // Add your message-handling code here
         CanMsg message;
         if(can_rx(&message )){
-            can_printmsg(message);
+            //can_printmsg(message);
+            PWM_set(message.byte[0]);
         }
     } else {
         printf("CAN0 message arrived in non-used mailbox\n\r");
