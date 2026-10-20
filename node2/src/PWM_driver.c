@@ -68,3 +68,14 @@ void PWM_init(){
     */
 }
 
+void PWM_set(uint8_t value){
+    int duty_cycle; //1125
+    if (value>100){
+        duty_cycle=2625;
+    }
+    else {
+        duty_cycle=value*(2625-1125)/100+1125;
+    }
+    PWM_CDTYUPD=duty_cycle;
+
+}
