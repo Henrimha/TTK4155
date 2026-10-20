@@ -62,3 +62,16 @@ void PWM_init(){
      Enable of the PWM channels (writing CHIDx in the PWM_ENA register)
     */
 }
+
+
+void PWM_set(uint8_t value){
+    int duty_cycle; //1125
+    if (value>100){
+        duty_cycle=2625;
+    }
+    else {
+        duty_cycle=value*(2625-1125)/100+1125;
+    }
+    PWM_CDTYUPD=duty_cycle;
+
+}
