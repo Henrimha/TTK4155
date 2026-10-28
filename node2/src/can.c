@@ -90,12 +90,13 @@ void can_tx(CanMsg m){
 
 uint8_t can_rx(CanMsg* m){
     if(!(CAN0->CAN_MB[rxMailbox].CAN_MSR & CAN_MSR_MRDY)){
+        printf("fuøkk ju\n\r");
         return 0;
     }
 
     // Get message ID
     m->id = (uint8_t)((CAN0->CAN_MB[rxMailbox].CAN_MID & CAN_MID_MIDvA_Msk) >> CAN_MID_MIDvA_Pos);
-        
+    printf("id:               %d\n\r", m->id);
     // Get data length
     m->length = (uint8_t)((CAN0->CAN_MB[rxMailbox].CAN_MSR & CAN_MSR_MDLC_Msk) >> CAN_MSR_MDLC_Pos);
     
@@ -120,10 +121,22 @@ void CAN0_Handler(void){
     // RX interrupt
     if(can_sr & (1 << rxMailbox)){
         // Add your message-handling code here
-        //joystick_drive();
+        
+        //
 
         CanMsg message;
         if(can_rx(&message )){
+            switch (message.id){
+                case JOYSTICK:
+                    joystick_control();
+                    break;
+                case BUTTONS:
+                    buttons_control();
+                    break;
+
+            }
+            
+            
             //can_printmsg(message);
             // PWM_set(message.byte[0]);
         }

@@ -44,6 +44,8 @@ int main()
     PWM_set(50);
     dcmotor_init();
     int score=0;
+
+
     while (1){
 
 
