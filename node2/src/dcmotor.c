@@ -40,3 +40,56 @@ void dc_motor_reset(){
 int dc_motor_read(){
     return REG_TC2_CV0;
 }
+
+void motor_PWM_init(){
+    // Supply a voltage to the 4mm banana sockets (9V - 12V)
+    // Apply a PWM signal to the ENABLE/PWM pin (any frequency below 50 kHz)
+    // Apply a high or low signal to the PHASE/DIR pin
+    // The ENABLE/PWM pin is connected to Arduino pin D20, or ATSAM3X8E pin PB12. 
+    REG_PWM_WPCR = PWM_WPCR_WPKEY(0x50574DUL) | PWM_WPCR_WPCMD(0) | PWM_WPCR_WPRG2 | PWM_WPCR_WPRG3 | PWM_WPCR_WPRG4;
+
+    REG_PIOB_PDR |= PIO_PB12; // disable peripheral registoer io pc26
+    REG_PIOB_ABSR |= PIO_PB12; // select register peripheral pb12
+
+    REG_PWM_CMR0 &= ~0xF;
+    REG_PWM_CMR0 |= PWM_CMR_CPRE_MCK_DIV_2;
+    REG_PWM_CMR0 &= ~PWM_CMR_CALG; // Left alligment
+    REG_PWM_CMR0 |= PWM_CMR_CPOL; //Start at high level
+    REG_PWM_CMR0 &= ~PWM_CMR_CES; // trolig irrelevant:)  counter event selection
+    REG_PWM_CMR0 &= ~PWM_CMR_DTE; // disable dead time
+    REG_PWM_SCM &= ~PWM_SCM_SYNC0; // Ikke synkron channel
+    REG_PWM_CPRD0 = 2100; //Øvre grense for 
+    REG_PWM_CDTY0 = 0; //Starter med 0 i power
+
+    REG_PWM_ENA = PWM_ENA_CHID0;
+
+    //PWM out on PB12 is set with alternate function B on PIOB, and frequency/duty cycle is set on PWM channel 0
+    //Use PWMH0
+
+    //The PHASE/DIR pin is connected to Arduino pin D7, or ATSAM3X8E pin PC23.
+    REG_PIOC_WPMR=PIO_WPMR_WPKEY(0x50494F);
+    REG_PIOC_PER =PIO_PC23; //disable pheripherals, enable PIO
+    REG_PIOC_OER = PIO_PC23;//set as output
+    REG_PIOC_OWER = PIO_PC23; //Can use ODSR to set the line
+    REG_PIOC_WPMR=PIO_WPMR_WPKEY(0x50494F) | PIO_WPMR_WPEN;
+
+}
+
+void motor_PWM_set(u_int32_t value, char dir_left){
+    if (value>2100){
+        REG_PWM_CDTYUPD1=2100;
+    }
+    else{
+        REG_PWM_CDTY0 = value; 
+    }
+    if (dir_left){
+        REG_PIOC_SODR = PIO_PC23; //set data to ouput 23
+    }
+    else {
+        REG_PIOC_CODR = PIO_PC23; //set data to ouput 23
+
+    }
+    //Set phase
+
+
+}
