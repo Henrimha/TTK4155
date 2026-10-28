@@ -46,19 +46,27 @@ int main()
     motor_PWM_init();
     int score=0;
 
-
     while (1){
 
 
         // CAN0_Handler();
 
-        for (int i=0; i<10000000; i++);
+        for (int i=0; i<100000; i++){
+            if(i==100000/2){
+                motor_PWM_set(600,1);
+            }
+            if(i==0){
+                motor_PWM_set(600,0);
+
+            }
+        };
         if (ADC_sample()<100){
             score++;
         }
         if (score%2){
             dc_motor_reset();
         }
+        
         printf("Count = %d.   ",score);
 
         printf("%d \n\r", REG_TC2_CV0);

@@ -19,5 +19,5 @@ void send_joystick(){
     oled_goto_page_column(1,0);
     oled_print(y);
     oled_print(" ");
-    CAN_send(3, message);
+    CAN_send_extended(JOYSTICK, 3, 0, message);
 }
