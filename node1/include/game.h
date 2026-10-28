@@ -2,6 +2,7 @@
 
 #include <utils.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <ATMega162_driver.h>
 #include <SRAM_driver.h>
 #include <ADC_driver.h>

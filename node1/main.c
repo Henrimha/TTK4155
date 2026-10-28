@@ -46,7 +46,7 @@ int main(void) {
     // interrupt_test();
     printf("shallom allekom");
     
-    // cli();
+    cli(); //Fjerner interrupts???
     // ADC_test();
     // SRAM_test();
     // oled_print("SuG BalLE og pikk");
@@ -60,8 +60,10 @@ int main(void) {
     set_sleep_mode(SLEEP_MODE_PWR_SAVE);
     while(1){
         // Joystick joystick = joystick_read();
+        // printf("For ");
         send_joystick();
-        _delay_ms(500);
+        // printf(" etter   ");
+        _delay_ms(100);
     }
     /*
     //CAN test

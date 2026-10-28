@@ -119,10 +119,12 @@ void CAN0_Handler(void){
     // RX interrupt
     if(can_sr & (1 << rxMailbox)){
         // Add your message-handling code here
+        joystick_drive();
+
         CanMsg message;
         if(can_rx(&message )){
             //can_printmsg(message);
-            PWM_set(message.byte[0]);
+            // PWM_set(message.byte[0]);
         }
     } else {
         printf("CAN0 message arrived in non-used mailbox\n\r");

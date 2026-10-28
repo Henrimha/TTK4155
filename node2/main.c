@@ -39,8 +39,29 @@ int main()
     //Uncomment after including uart above
     //uart_init(/*cpufreq*/, /*baud*/);
     //printf("Hello World\n\r");
+    
+    PWM_set(50);
+    while (1){
 
 
+        // CAN0_Handler();
+
+        for (int i=0; i<1000000; i++);
+        printf("Si hei:) ! \n\r");
+        
+        // PWM_set(0);
+
+
+
+        // for (int i=0; i<10000000; i++);
+        
+        
+        // PWM_set(100);
+        
+
+        // for (int i=0; i<10000000; i++);
+
+    }
 
     
     
