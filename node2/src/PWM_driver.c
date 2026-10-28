@@ -4,12 +4,7 @@ void PWM_init(){
     // PMC_PCER = (1 << 4);//enable PWM in the PMC
     REG_PMC_PCER1 = PMC_PCDR1_PID36;
     REG_PWM_WPCR = PWM_WPCR_WPKEY(0x50574DUL) | PWM_WPCR_WPCMD(0) | PWM_WPCR_WPRG2 | PWM_WPCR_WPRG3 | PWM_WPCR_WPRG4;
-    // (0x50574DUL << PWM_WPCR_WPKEY_Pos);  //PWM in ascii
-    // REG_PWM_WPCR |= PWM_WPCR_WPRG2; //sRegister 2 disable, PCMR osv
-    // REG_PWM_WPCR |= PWM_WPCR_WPRG3; //sRegister 3 disable, CPRD
-    // REG_PWM_WPCR |= PWM_WPCR_WPRG4; //sRegister 4 disable, Dead time osv
-    // REG_PWM_WPCR &= ~(1 << PWM_WPCR_WPCMD_Pos); // Disable write protection 
-    // REG_PWM_WPCR &= ~(1 << PWM_WPCR_WPCMD_Pos+1); // Disable write protection 
+    
 
     // set peripherals
     REG_PIOB_PDR = PIO_PB13; // disable peripheral registoer io pb13

@@ -43,6 +43,7 @@ int main()
     ADC_init();
     PWM_set(50);
     dcmotor_init();
+    motor_PWM_init();
     int score=0;
 
 
