@@ -33,45 +33,16 @@ int main()
     uart_init(F_CPU,BAUDRATE); //Uart init
     PWM_init();
     
-    
-    PMC->PMC_PCER0 |= (1<<ID_PIOB);
-    
-    PIOB->PIO_PER = PIO_PB13; //Enable register
-    PIOB->PIO_OER = PIO_PB13; //output enable register
-    
-    // PIOB->PIO_SODR = PIO_PB13;  //Setting PB13 High 
-    PIOB->PIO_CODR = PIO_PB13;   //clear output data register
+
     
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
     //Uncomment after including uart above
     //uart_init(/*cpufreq*/, /*baud*/);
     //printf("Hello World\n\r");
+
+
+
     
-    while (1){
-
-        PWM_set(20);
-
-        for (int i=0;i<1000000;i++){}
-
-        PWM_set(100);
-        
-        for (int i=0;i<1000000;i++){}
-
-
-    }
-
-    while (1)
-    {
-        /* code */
-        // Sett PB13 lav
-        PIOB->PIO_CODR = PIO_PB13;
-
-        for (volatile unsigned int i = 0; i < 2000000; i++);
-
-        // Sett PB13 høy
-        PIOB->PIO_SODR = PIO_PB13;
-
-        for (volatile unsigned int i = 0; i < 2000000; i++);
-    }
+    
     
 }

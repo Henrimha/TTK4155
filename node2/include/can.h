@@ -2,6 +2,7 @@
 #pragma once
 
 #include <stdint.h>
+#include "PWM_driver.h"
 
 // Struct with bit timing information
 // See `can_init` for usage example
