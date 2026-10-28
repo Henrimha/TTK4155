@@ -15,6 +15,7 @@
 #include "CAN_driver.h"
 #include "mcp2515_driver.h"
 #include "tests/interrupt_test.h"
+#include "game.h"
 
 
 
@@ -59,10 +60,7 @@ int main(void) {
     set_sleep_mode(SLEEP_MODE_PWR_SAVE);
     while(1){
         // Joystick joystick = joystick_read();
-        Joystick joystick = joystick_read_scale();
-
-        char message[]={joystick.X,joystick.Y, joystick.btn};
-        CAN_send(3, message);
+        send_joystick();
         _delay_ms(500);
     }
     /*
