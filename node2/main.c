@@ -4,7 +4,8 @@
 #include "sam.h"
 #include "uart.h"
 #include "PWM_driver.h"
-
+#include "ADC_driver.h"
+#include "dcmotor.h"
 
 /*
  * Remember to update the Makefile with the (relative) path to the uart.c file.
@@ -39,16 +40,27 @@ int main()
     //Uncomment after including uart above
     //uart_init(/*cpufreq*/, /*baud*/);
     //printf("Hello World\n\r");
-    
+    ADC_init();
     PWM_set(50);
+    dcmotor_init();
+    int score=0;
     while (1){
 
 
         // CAN0_Handler();
 
-        for (int i=0; i<1000000; i++);
-        printf("Si hei:) ! \n\r");
+        for (int i=0; i<10000000; i++);
+        if (ADC_sample()<100){
+            score++;
+        }
+        if (score%2){
+            dc_motor_reset();
+        }
+        printf("Count = %d.   ",score);
+
+        printf("%d \n\r", REG_TC2_CV0);
         
+
         // PWM_set(0);
 
 

@@ -9,7 +9,7 @@ void joystick_drive(){
     Joystick j;
 
     a = can_rx(&m);
-    if (a){printf("can_rx, baby\n\r")}
+    if (a){printf("can_rx, baby\n\r");}
     if(m.length=3){
         
         printf("lengde 3\n\r");
