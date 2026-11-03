@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "PWM_driver.h"
+#include "utils.h"
 
 // Struct with bit timing information
 // See `can_init` for usage example
@@ -73,7 +74,8 @@ struct Byte8 {
 typedef enum {
     filler,
     JOYSTICK, 
-    BUTTONS
+    BUTTONS,
+    TOUCH
 }MsgID;
 
 

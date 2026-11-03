@@ -6,10 +6,10 @@ typedef struct {
     unsigned char joystick_y;
     unsigned char touch_x;
     unsigned char touch_y;
-} sample;
+} Sample;
 
 void ADC_init();
 
 uint8_t scale_axis(uint8_t raw, uint8_t min);
 
-sample ADC_sample();
+Sample ADC_sample();

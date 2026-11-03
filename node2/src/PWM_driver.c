@@ -45,6 +45,7 @@ void PWM_set(uint8_t value){
     int val_max = 100;
     int max_pwm = 2625;
     int min_pwm = 1313;
+    // printf("pwm value: %d\n\n\r", value);
 
     int duty_cycle; //1125
     if (value > val_max){
