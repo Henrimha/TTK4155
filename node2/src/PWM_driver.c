@@ -37,6 +37,20 @@ void PWM_init(){
     REG_PWM_WPCR = PWM_WPCR_WPKEY(0X50574DUL) | PWM_WPCR_WPCMD(1) | PWM_WPCR_WPRG2 | PWM_WPCR_WPRG3 | PWM_WPCR_WPRG4;
     // REG_PWM_WPCR |= (1 << PWM_WPCR_WPCMD_Pos); // enable write protection 
     // REG_PWM_WPCR &= ~(1 << PWM_WPCR_WPCMD_Pos+1); // enable write protection 
+}
+
+void solenoid_init(){
+    //PA16 is the atmel pin, A0 on arduino
+    REG_PIOA_WPMR=PIO_WPMR_WPKEY(0x50494F);
+    REG_PIOA_PER =PIO_PA16; //disable pheripherals, enable PIO
+    REG_PIOA_OER = PIO_PA16;//set as output
+    //REG_PIOA_OWER = PIO_PA16; //Can use ODSR to set the line
+    REG_PIOA_WPMR=PIO_WPMR_WPKEY(0x50494F) | PIO_WPMR_WPEN;
+};
+void solenoid_shoot(){
+    REG_PIOA_CODR = PIO_PA16; //set data to ouput 23
+    for (volatile int i=0;i<1000000;i++){};
+    REG_PIOA_SODR = PIO_PA16;
 
 }
 

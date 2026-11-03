@@ -6,8 +6,8 @@ void dcmotor_init(){
     REG_PMC_PCER1 = PMC_PCER1_PID33; //Enable CT2
     REG_PIOC_PDR |= PIO_PC25; // disable peripheral registoer io pc25
     REG_PIOC_PDR |= PIO_PC26; // disable peripheral registoer io pc26
-    REG_PIOC_ABSR |= PIO_PC25; // select register peripheral pb13
-    REG_PIOC_ABSR |= PIO_PC26; // select register peripheral pb13
+    REG_PIOC_ABSR |= PIO_PC25; // select register peripheral 
+    REG_PIOC_ABSR |= PIO_PC26; // select register peripheral 
     // quadrature decoder
     // Sette tioa0 og tiob0 til input
     REG_TC2_WPMR = RTC_WPMR_WPKEY(0x54494D);

@@ -14,5 +14,8 @@
 
 
 void PWM_init();
+void solenoid_init();
+void solenoid_shoot();
+
 
 void PWM_set(uint8_t value);
