@@ -5,6 +5,7 @@
 #include "uart.h"
 #include "PWM_driver.h"
 #include <stdbool.h>
+#include "dcmotor.h"
 
 
 

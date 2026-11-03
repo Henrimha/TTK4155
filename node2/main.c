@@ -46,6 +46,8 @@ int main()
     PWM_set(50);
     dcmotor_init();
     motor_PWM_init();
+    solenoid_init();
+    solenoid_shoot();
     int score=0;
 
     while (1){
@@ -55,23 +57,20 @@ int main()
         }
 
 
-        // for (int i=0; i<10000000; i++){
-        // //     if(i==100000/2){
-        // //         motor_PWM_set(600,1);
-        // //     }
-        // //     if(i==0){
-        // //         motor_PWM_set(600,0);
+        // for (int i=0; i<1000000; i++);
+        // motor_PWM_set(600,1);
+        // for (int i=0; i<1000000; i++);
+        // motor_PWM_set(600,0);
 
-        // //     }
-        // };
         if (ADC_sample()<100){
             score++;
         }
-        if (score%2){
-            dc_motor_reset();
-        }
-        for(int i = 0; i<1000000; i++);
-        printf("Count = %d.   ",score);
+        // if (score%2){
+        //     dc_motor_reset();
+        // }
+        //printf("motor  %d\n\r", dc_motor_read());
+        // for(int i = 0; i<1000000; i++);
+        //printf("Count = %d.   ",score);
 
         printf("%d \n\r", REG_TC2_CV0);
     }
