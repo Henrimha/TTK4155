@@ -8,6 +8,8 @@
 #include "sam/sam3x/include/instance/instance_pmc.h"
 #include "sam/sam3x/include/pio/pio_sam3x8e.h"
 #include "sam/sam3x/include/instance/instance_piob.h"
+#include "utils.h"
+#include "dcmotor.h"
 void timer_init();
 
 void calculate_thrust();
