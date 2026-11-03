@@ -58,12 +58,12 @@ int main(void) {
 
 
     set_sleep_mode(SLEEP_MODE_PWR_SAVE);
+
+
+
     while(1){
-        // Joystick joystick = joystick_read();
-        // printf("For ");
-        send_joystick();
-        // printf(" etter   ");
-        _delay_ms(100);
+        io_send();
+        _delay_ms(16);
     }
     /*
     //CAN test

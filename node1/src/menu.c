@@ -42,7 +42,7 @@ static uint8_t item_count(States state){
 void menu_state_machine(void){
     States menu_state = MAIN_MENU;
     int selector_position = 0;
-    sample joystick_pos;
+    Sample joystick_pos;
     enum Joystick_states joystick_state  = NEUTRAL;
     Buttons buttons;
     Buttons prev_buttons = {0};

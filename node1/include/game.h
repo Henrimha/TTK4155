@@ -13,5 +13,14 @@
 #include "mcp2515_driver.h"
 
 
+typedef struct{
+    uint8_t X;
+    uint8_t Y;
+}Touch;
 
-void send_joystick();
+
+void send_joystick(Joystick *jstk);
+void send_buttons(Buttons *btns);
+void send_touch(Touch *t);
+
+void io_send();

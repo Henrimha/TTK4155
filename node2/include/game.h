@@ -4,6 +4,7 @@
 #include "sam.h"
 #include "uart.h"
 #include "PWM_driver.h"
+#include <stdbool.h>
 
 
 
@@ -53,5 +54,5 @@ typedef struct __attribute__((packed)) {
     };
 } Buttons;
 
-void joystick_control();
-void buttons_control();
+void joystick_control(CanMsg *m);
+void buttons_control(CanMsg *m);

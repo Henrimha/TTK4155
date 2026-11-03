@@ -13,5 +13,6 @@ static inline void CAN_send(char length, char *sData){CAN_send_extended(0x01, le
 typedef enum {
     filler,
     JOYSTICK, 
-    BUTTONS
+    BUTTONS,
+    TOUCH
 }MsgID;

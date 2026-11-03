@@ -6,6 +6,8 @@
 #include "PWM_driver.h"
 #include "ADC_driver.h"
 #include "dcmotor.h"
+#include "utils.h"
+#include "game.h"
 
 /*
  * Remember to update the Makefile with the (relative) path to the uart.c file.
@@ -31,7 +33,7 @@ int main()
     init.phase2=5; //=6
     init.smp=0; //Sample only once
     can_init(init,1); //interrupts enabled
-    uart_init(F_CPU,BAUDRATE); //Uart init
+    uart_init(F_CPU, BAUDRATE); //Uart init
     PWM_init();
     
 
@@ -47,43 +49,31 @@ int main()
     int score=0;
 
     while (1){
+        if(CAN_FLAG){
+            CAN0_Handler();
+            CAN_FLAG = 0;
+        }
 
 
-        // CAN0_Handler();
+        // for (int i=0; i<10000000; i++){
+        // //     if(i==100000/2){
+        // //         motor_PWM_set(600,1);
+        // //     }
+        // //     if(i==0){
+        // //         motor_PWM_set(600,0);
 
-        for (int i=0; i<100000; i++){
-            if(i==100000/2){
-                motor_PWM_set(600,1);
-            }
-            if(i==0){
-                motor_PWM_set(600,0);
-
-            }
-        };
+        // //     }
+        // };
         if (ADC_sample()<100){
             score++;
         }
         if (score%2){
             dc_motor_reset();
         }
-        
+        for(int i = 0; i<1000000; i++);
         printf("Count = %d.   ",score);
 
         printf("%d \n\r", REG_TC2_CV0);
-        
-
-        // PWM_set(0);
-
-
-
-        // for (int i=0; i<10000000; i++);
-        
-        
-        // PWM_set(100);
-        
-
-        // for (int i=0; i<10000000; i++);
-
     }
 
     

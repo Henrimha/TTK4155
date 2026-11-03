@@ -22,11 +22,11 @@ uint8_t scale_axis(uint8_t raw, uint8_t min){
 
 
 // 200 mikrosekunder
-sample ADC_sample(){
+Sample ADC_sample(){
     volatile uint8_t *ADC=(uint8_t*)0x1000;
     ADC[0]=1;
     while(PIND & (1<<PD4));
-    volatile sample value;
+    volatile Sample value;
     value.joystick_x = scale_axis(ADC[0], 66);
     value.joystick_y = scale_axis(ADC[0], 69);
     value.touch_x = ADC[0]/2.55;
