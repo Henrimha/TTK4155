@@ -23,28 +23,32 @@ ISR(CT0_vect){
 
 //State between 0 and 4000
 void calculate_thrust(int ref){
-    if(ref>100 || ref<0){
-        return 0;
+    if(ref>80 || ref<20){
+        return;
     }
-    int kp=1;
-    int ki=1;
-    int kd=0;
+    int pos = dc_motor_read();
+    double K=10;
+    double Ti=100000000;
+    double Td=0;
 
-    int e=40*ref-dcmotor_read();
-    int diff=dcmotor_read()-PREVIOUS_VALUE;
-    int result=kp*e+diff*kd*60+ki*INTEGRATOR_STATE/60;
-    if (result<-100){
-        result=-100;
+    int e=ref-pos/40;
+    int deriv=(pos-PREVIOUS_VALUE);
+    int result=K*(e-deriv*Td+INTEGRATOR_STATE/60/Ti);
+    printf("%d, %d, %d\n\r", result, deriv, INTEGRATOR_STATE/60);
+
+    if (result<-1000){
+        result=-1000;
 
     }
-    else if(result>100){
-        result=100;
+    else if(result>1000){
+        result=1000;
     }
     else{
         INTEGRATOR_STATE+=e;
     }
-    motor_PWM_set(result, result>=0);
-
+    motor_PWM_set(abs(result), result<=0);
+    printf("%d\n\r", result);
+    PREVIOUS_VALUE=pos;
     return;
    
     

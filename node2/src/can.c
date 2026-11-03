@@ -130,6 +130,8 @@ void CAN0_Handler(void){
             case BUTTONS:
                 buttons_control(&m);
                 break;
+            case TOUCH:
+                touch_control(&m);
         }
         
     } else {
