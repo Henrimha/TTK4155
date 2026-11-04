@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "MCP2515.h"
 #include "mcp2515_driver.h"
+#include "utils.h"
 
 void USART_Init( unsigned int ubrr )
 {
@@ -31,6 +32,14 @@ void interrrupt_init(){
     MCUCR |= (1<<ISC11); // Interrupt on INT0 is low (falling flank)
     GICR |= (1<<INT1); //Enable interrupt for INT1
     sei();
+
+    //make counter/timer 0
+    TCCR3A=0; 
+    TCCR3B=(1<<CS32)|(1<<CS30)|(1<<WGM32);//Prescaler is 1024, CTC clear timer on compare
+    OCR3AH=1; //Ish 60Hz
+    OCR3AL=5; //5+255
+    ETIMSK|=(1<<OCIE3A); //interrupt on output compare A match
+    
 }
 
 //assumes 8 bit data
@@ -106,4 +115,9 @@ void int1_interrupt_routine(){
 
     GICR |= (1<<INT1);
     return;
+}
+
+ISR(TIMER3_COMPA_vect){
+    TC3_FLAG=1;
+    return; //Interrupt flag is automatily cleared when ISR routine is run
 }
