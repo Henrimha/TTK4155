@@ -13,28 +13,31 @@ void ADC_init(){ //ADC er ID nr 37
     
     //enable by writing ADC_CHER
     REG_ADC_CHER = ADC_CHER_CH0;
-
+    REG_PIOA_PDR = PIO_PA16;
+    PIOA->PIO_PUER = 0;
     //No interrupts
     REG_ADC_IDR = 0xffffffff; //Disable all interrupts
-    //Bruke PIN A0/PA2  , eller AD0, Channel 0
+    //Bruke PIN A7/PA  , eller AD0, Channel 0
 
     //ADVREF?? set the reference externally
 
     //STores value in ADC_CDRx, ADC_LCDR
 
     //There are flags to check if values are overwritten
-    REG_ADC_WPMR |= ADC_WPMR_WPKEY(0x414443)|ADC_WPMR_WPEN; //set write protect to 1, on
+    REG_ADC_WPMR = ADC_WPMR_WPKEY(0x414443)|ADC_WPMR_WPEN; //set write protect to 1, on
 }
 
 int ADC_sample(){
-    REG_ADC_CR |= ADC_CR_START; //Start analog to digital conversion
+    REG_ADC_CR = ADC_CR_START; //Start analog to digital conversion
     //Wait
     int i=0;
     while( !(REG_ADC_ISR & ADC_ISR_EOC0)){
         i++; 
-        if (i>1000000){printf("Timout"); 
+        if (i>168){printf("Timout"); 
             return 9999;}
     } //Wait for conversion to finish
+    //printf("%04X\n", REG_ADC_ISR);
+
     return ADC->ADC_CDR[0] & ADC_CDR_DATA_Msk; //value stored
 
 }

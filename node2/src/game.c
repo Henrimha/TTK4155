@@ -14,7 +14,7 @@ void joystick_control(CanMsg *m){
     j.btn = m->byte[2] ;
     PWM_set(j.X);
 
-    printf("Y = %d     ", j.Y);
+    //printf("Y = %d     ", j.Y);
     // calculate_thrust(j.Y);
 
     
@@ -60,7 +60,7 @@ void buttons_control(CanMsg *m){
 
 
     b.left = m->byte[1];
-    b.nav = m->byte[2];høy
+    b.nav = m->byte[2];
 
 }
 
@@ -70,15 +70,15 @@ void touch_control(CanMsg *m){
     calculate_thrust(t.X);
 }
 
-void IR_send(){
-    int IR = ADC_sample();
-    CanMsg c;
-    c.id = IR; //Lag Enum som sier hva IR er, tilsvarende som button og joystick
-    c.length = 8;
+// void IR_send(){
+//     int IR = ADC_sample();
+//     CanMsg c;
+//     c.id = IR; //Lag Enum som sier hva IR er, tilsvarende som button og joystick
+//     c.length = 8;
 
-    // Send Bestemt meding som betyr IR brutt
+//     // Send Bestemt meding som betyr IR brutt
     
-    can_tx()
+//     can_tx();
 
 
-}
+// }

@@ -56,11 +56,22 @@ int main()
             CAN_FLAG = 0;
         }
 
-
-        if (ADC_sample()<100){
-            score++;
+        if (CT0_FLAG){
+            CT0_FLAG=0;
+            calculate_thrust();
+            if (ADC_sample()<100){
+                //end game, Can send back
+                CanMsg m;
+                m.id=0;
+                m.length=1;
+                m.byte[0]=1;
+                can_tx(m);
+                printf("finito");
+            }
         }
-
+        
+        
+        for (int i=0;i<10000;i++){};
         //printf("%d \n\r", REG_TC2_CV0);
     }
 

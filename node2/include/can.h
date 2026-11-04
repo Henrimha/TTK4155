@@ -40,10 +40,7 @@ void can_init(CanInit init, uint8_t rxInterrupt);
 
 
 // Dummy type for use with `union_cast`, see below
-typedef struct Byte8 Byte8;
-struct Byte8 {
-    uint8_t bytes[8];
-};
+
 
 
 // CAN message data type
@@ -79,16 +76,7 @@ typedef enum {
 }MsgID;
 
 
-typedef struct CanMsg CanMsg;
-struct CanMsg {
-    uint8_t id;
-    uint8_t length;
-    union {
-        uint8_t     byte[8];
-        uint32_t    dword[2];
-        Byte8       byte8;
-    };    
-};
+
 
 // Send a CAN message on the bus. 
 // Blocks if the bus does not receive the message (typically because one of the 

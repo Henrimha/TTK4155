@@ -101,24 +101,24 @@ void int1_interrupt_routine(){
     char error_m=mcp2515_read(MCP_CANINTF);
     printf("CANINTF = 0x%02X\r\n", error_m);
     if (error_m & 1){
-        
-        CAN_read(CAN_RX_DATA);
+        CAN_read(&CAN_RX_DATA);
 
         for (int i=0; i<8;i++){
-        printf("%c", CAN_RX_DATA[i]);
+        printf("%c", CAN_RX_DATA.byte[i]);
         }
         printf("\n\r");
 
         oled_goto_page_column(7, 0);
-        printf("%d",CAN_RX_DATA);
+        printf("%d", CAN_RX_DATA.byte[0]);
         
     }
 
     GICR |= (1<<INT1);
+       mcp2515_bit_modify(MCP_CANINTF, 0xFF, 0x00);
     return;
 }
 
 ISR(TIMER3_COMPA_vect){
     TC3_FLAG=1;
-    return; //Interrupt flag is automatily cleared when ISR routine is run
+    return; //Interrurpt flag is automatily cleared when ISR routine is run
 }

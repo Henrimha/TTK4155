@@ -42,13 +42,3 @@ typedef struct{
 
 
 
-typedef struct CanMsg CanMsg;
-struct CanMsg {
-    uint8_t id;
-    uint8_t length;
-    union {
-        uint8_t     byte[8];
-        uint32_t    dword[2];
-        Byte8       byte8;
-    };    
-};

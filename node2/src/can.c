@@ -86,6 +86,9 @@ void can_tx(CanMsg m){
         
     // Set message length and mailbox ready to send
     CAN0->CAN_MB[txMailbox].CAN_MCR = (m.length << CAN_MCR_MDLC_Pos) | CAN_MCR_MTCR;
+    printf("sent");
+    //for (volatile int i = 0; i < 100000; i++);
+    printf("SR:%08lX ECR:%08lX MSR:%08lX\n\r", CAN0->CAN_SR, CAN0->CAN_ECR, CAN0->CAN_MB[0].CAN_MSR);
 }
 
 uint8_t can_rx(CanMsg* m){
@@ -117,8 +120,7 @@ void CAN0_Handler(void){
     char can_sr = CAN0->CAN_SR; 
 
     // RX interrupt
-    if(can_sr & (1 << rxMailbox)){TONS:
-                butt
+    if(can_sr & (1 << rxMailbox)){
         // Add your message-handling code here
         
         CanMsg m;
@@ -133,6 +135,7 @@ void CAN0_Handler(void){
                 break;
             case TOUCH:
                 touch_control(&m);
+                break;
         }
         
     } else {

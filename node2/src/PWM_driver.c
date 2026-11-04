@@ -40,11 +40,11 @@ void PWM_init(){
 }
 
 void solenoid_init(){
-    //PA16 is the atmel pin, A0 on arduino
+    //PA23 is the atmel pin, A2 on arduino
     REG_PIOA_WPMR=PIO_WPMR_WPKEY(0x50494F);
     REG_PIOA_PER =PIO_PA23; //disable pheripherals, enable PIO
     REG_PIOA_OER = PIO_PA23;//set as output
-    //REG_PIOA_OWER = PIO_PA16; //Can use ODSR to set the line
+    //REG_PIOA_OWER = PIO_PA23; //Can use ODSR to set the line
     REG_PIOA_WPMR=PIO_WPMR_WPKEY(0x50494F) | PIO_WPMR_WPEN;
 };
 void solenoid_shoot(){

@@ -52,7 +52,7 @@ int main(void) {
     // interrupt_test();
     printf("shallom allekom");
     
-    cli(); //Fjerner interrupts???
+     //Fjerner interrupts???
     // ADC_test();
     // SRAM_test();
     // oled_print("SuG BalLE og pikk");
@@ -66,41 +66,53 @@ int main(void) {
     set_sleep_mode(SLEEP_MODE_PWR_SAVE);
 
 
-
+    int fet=0;
     while(1){
         menu_state_machine();
-
+        GAMESTATE=0;
+        oled_clear();
         while(1){
-            io_send();
             if(INT1_FLAG){
                 INT1_FLAG=0;
                 int1_interrupt_routine();
                 printf("Tilbake til State Maskin!!\r\n");
                 break;
             }
+            if (TC3_FLAG){
+                TC3_FLAG=0;
+                io_send();
+
+                fet++;
+                if (!(fet%100)){
+                    char y[5];
+                    itoa(fet/30, y, 10);
+                    oled_goto_page_column(7,0);
+                    oled_print(y);
+                    oled_print("    ");
+                }
+                
+                //System routine
+            }
         }
+        oled_clear();
     }
     
-    while(1){
-        io_send();
-        _delay_ms(16);
-    }
+    // while(1){
+    //     io_send();
+    //     _delay_ms(16);
+    // }
 
 
-    while(1){
-        if (TC3_FLAG){
-            TC3_FLAG=0;
-            //System routine
-            io_send();
-        }
+    // while(1){
+    //     
         
-        cli();
+    //     cli();
 
-        sleep_enable();
-        sleep_cpu();  
-        sleep_disable();
-        sei();
-    }
+    //     sleep_enable();
+    //     sleep_cpu();  
+    //     sleep_disable();
+    //     sei();
+    // }
     /*
     //CAN test
     while (1){

@@ -8,7 +8,7 @@ void timer_init(){
     //Lets use TC0
     //COVFS bit in TC_SR is set high when overflow, REG_TC0_SR0 & COVFS
     REG_TC0_CMR0=TC_CMR_TCCLKS_TIMER_CLOCK3|TC_CMR_WAVE|TC_CMR_CPCTRG; // MCK/64, waveform, restart on capture
-    REG_TC0_RC0=21875; //60hz
+    REG_TC0_RC0=10938; //120hz
 
     REG_TC0_IER0|=TC_IER_CPAS; //enable overflow interrupt
 
@@ -22,8 +22,9 @@ ISR(CT0_vect){
 }
 
 //State between 0 and 4000
+
 void calculate_thrust(int ref){
-    if(ref>80 || ref<20){
+    if(ref>100 || ref<0){
         return;
     }
     int pos = dc_motor_read();

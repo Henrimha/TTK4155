@@ -26,27 +26,16 @@ void CAN_init(){
     mcp2515_bit_modify(MCP_CNF2, 0xff, (1<<7)|(0<<6)|(0b110<<3)|(0b01<<0)); // BTLMODE=1, sample once, PS1=6+1=7, Phase seg for distance=2
     mcp2515_bit_modify(MCP_CNF3, 0b00000111, 0x05); //PS2=5+1=6
     //SyncSeg + PropSeg+PS1+PS2=16, sample at 10/16=62.5%
-    mcp2515_bit_modify(MCP_CANINTE, 0b00000001,0b000000001); //enable interrupt
+    mcp2515_bit_modify(MCP_CANINTE, 0xFF,0b000000001); //enable interrupt
 
 
 
     // mcp2515_bit_modify(MCP_CANCTRL, 0b11100011, MODE_LOOPBACK); // sLoopbak mode set
     mcp2515_bit_modify(MCP_CANCTRL, 0b11100011, MODE_NORMAL); // sNormal mode set
-
+    mcp2515_bit_modify(MCP_CANINTF, 0xFF, 0x00);
 
 
 }
-
-// void CAN_read(char* rData){
-//     char data[9]={MCP_READ_RX_BUFFER,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-
-//     SPI_array_transmit(data,CAN_CONTROLLER,9,data);
-
-//     for (int i=0; i<8; i++){
-//         rData[i]=data[i+1];
-//     }
-//     return;
-// }
 
 void CAN_read(CanMsg* rData){
     char data[14]={MCP_READ_RX_BUFFER,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
@@ -69,46 +58,7 @@ void CAN_read(CanMsg* rData){
     return;
 }
 
-/*
-void CAN_send(char* rData){
-    char data[9];
-    data[0]=MCP_LOAD_TX_BUFFER;
-    for (int i =1; i<9; i++){
-        data[i]=rData[i-1];
-    }
-    SPI_array_send(data, CAN_CONTROLLER, 9);
-    return;
-}*/
 
-
-//FUNGER PÅ ETT ELLER ANNET VIS
-// #define CAN_ID 0x123
-
-// void CAN_send(const char *payload) //Identifier 
-// {
-//     char data[14];
-
-//     data[0] = MCP_LOAD_TX_BUFFER;
-
-//     // Standard 11-bit CAN identifier: 0x123
-//     data[1] = (CAN_ID >> 3) & 0xFF;       // SIDH
-//     data[2] = (CAN_ID & 0x07) << 5;       // SIDL
-//     data[3] = 0x00;                       // EID8
-//     data[4] = 0x00;                       // EID0
-//     data[5] = 8;                           // DLC
-
-//     // Eight payload bytes
-//     for (int i = 0; i < 8; i++) {
-//         data[i + 6] = (char)payload[i];
-//     }
-
-//     // Verify the argument order against SPI_driver.h.
-//     SPI_array_send(data, CAN_CONTROLLER, 14);
-
-//     // Request transmission using TX buffer 0.
-//     char rts = 0x81; 01000001
-//     SPI_array_send(&rts, CAN_CONTROLLER, 1);
-// }
 
 #define MCP_TXB0SIDH 0x31
 #define MCP_TXB0SIDL 0x32
@@ -116,12 +66,10 @@ void CAN_send(char* rData){
 //identefier 0x123 0000 0001 0010 0011, 11 bit, 1 mask 0000000001 filter bit1 = 1 0x123 
 //Automatisk laveste priority
 void CAN_send_extended(uint16_t identifier, char length, char RTR, char *sData){
-
-
-    while (mcp2515_read(MCP_TXB0CTRL) & (1<<3)){
-        printf("Prover a sende mens TXREQ=1\n\r");
-        _delay_ms(10);
+    if(mcp2515_read(MCP_TXB0CTRL) & (1<<3)){
+        return;
     }
+
     char data[14];
     data[0] = MCP_LOAD_TX_BUFFER; 
     data[1] = (identifier >> 3) & 0xFF; 
@@ -145,196 +93,3 @@ void CAN_send_extended(uint16_t identifier, char length, char RTR, char *sData){
 
 }
 
-
-// from lab presentation
-// uint8_t mcp2525_read(uint8_t adress){
-//     uint8_t result;
-//     PORTB &= ~(1 << CAN_CS); // Select CAN controller
-//     SPI_write(MCP_READ); // send read instruction
-//     SPI_write (adress); // send adress
-//     result = SPI_read(); // read result
-//     PORTB |= (1 << CAN_CS); // Deselect CAN controller 
-//     return result;
-// }
-
-// uint8_t mcp2515_init(){
-//     uint8_t value;
-//     SPI_init(); // initialize SPI
-//     mcp2515_reset(); // send reset - command
-//     // self test
-//     mcp2515_read(MCP_CANSTAT, &value);
-//     if ((value & MODE_MASK) != MODE_CONFIG){
-//         printf("MCP2515 is NOT in config mode after reset!\n");
-//         return 1
-//     }
-//     // more initialization
-//     return 0
-// }
-
-
-
-// modes: 
-//     config
-//         init only possible in config mode
-//         autoselected after startup, reset or can be entered from any other mode (CANTRL.REQOP = 0b100)
-//         when entered    
-//             all error counters cleared
-//         only mode when these registers can be modified:
-//             CNF1, CNF2, CNF3
-                // controls bit timing for can bus
-                // CNF1    
-                //     Baud rate prescaler
-                //     set lentgh of T_q relatice to OSC1 input frequency
-                //         minimum being 2 TOSC (BRP<5:0> = 0b000000)
-                //         SJW<1:0> select SJW in numbers of TQS
-                // CNF2
-                //     PRSEG<2:0> set lentgh in TQS of propagation segment
-                //     PHSEG1<2:0> set length in TQS of PS1 
-                //     SAM bit control how many timesthe RXCAN pin is sampled 
-                //         1 => three times 
-            solenoid_shoot        
-//             TXRTSCTRL
-//             Filter registers
-//             Mask registers 
-//     normal
-//         actively monitors all bus messages
-//             generates acknowlegde bits, error frames, etc
-//         only mode where mcp2515 wil transmitt messages over the CAN bus
-//     sleep
-//         minimize current consumption
-//         can still read SPI and access all registers
-//         to enter:
-//             mode request bits in CANCTRL register (REQOP<2:0>)
-//             CANSTAT.OPMODE indicate operation mode
-//                 should be read after sending sleep command
-//                 is not in sleep until these indicate sleep
-//         when in sleep:
-//             wake up interrupt is active (if enabled)
-//             stops internal oscillator
-//             can have a lowpass filter on RXCAN inpu line
-//                 CNF3.WAKFIL bit controls this
-//         wake up:
-//             bus activity
-//             MCU sets (SPI) CANINTF.WAKIE bit to 'generate' a wakeup attempt 
-//                 CANINTE.WAKIE bit must also be set for interrupt to occur
-//             functions:
-//                 will monitor the RXCAN pin
-//                     if CANINTE.WAKIE bit is set 
-//                         wakeup and generate interrupt
-//                 wil ignore wakeup message and any messages during wakeup
-//             wakes up in listen only
-//             oscillator startup timer = 128 TOSC
-//     listen only
-//         by configuring RXBnCTRL.RXM<1:0> bits
-//         monitor bus 
-//         detecting baud rate in hotplugging situations
-//             at least two other nodes ar commnicating with each other
-//             found empirically
-//         no message will be transmitted
-//             including error flags and aknowlgde signals
-//         enter:
-//             setting the mode request bits in the CANCTRL register
-//     loopback
-//         allows internal transmission of messages from transmit buffers to recieve buffers without transmitting messages on the CAN-bus
-//         useed in system development and testing
-//         ACK bit is ignored
-//         allow incoming messages from itself as if they were from another node
-//         silent node
-//         TXCAN pin in recessive state
-//         can filter particular messages to be loaded
-//         activated by:
-//             setting the mode request bits in the CANCTRL register 
-
-
-// SPI interface
-//     sent to the device via commands and data via SI pin
-//     data clocked on rising edge og SCK
-//     data driven out by mcp2515 (SO pin) on falling edge of SCK
-//     CS pin must be low while any operation is performed
-//         first byte after lowering is epected to be instruction/command
-//         must be raised and lowered again to invoke another command
-//     RESET instruction  
-//         re initialize internal registers
-//         command does the same via SPI, as the RESET-pin
-//         single byte instruction
-//             pull CS low
-//             send instruction byte
-//             raise CS high
-//         recommended:
-//             Reset command be sent (or RESET pin lowered) as part on power on init sequence
-//     READ instruction
-//         what happens
-//             lower CS
-//             send READ instruction to mcp2515
-//             send 8 bit adress (A7-A0)
-//             data stored at det selected adress shited to SO pin
-//             operation terminated by setting CS high
-//         internal adress pointer is automatically incrementet to next adress
-//             after each byte is shifted out
-//             possibe to read the next consecutive register adress by continuing to privde clock pulses
-//                 can read ny number og sequentially stored data
-//     READ RX BUFFER instruction
-//         quickly adress a recieve buffer for reading
-//         reduces the SPI overhead by one byte (adress byte)
-//         four possible values that determine adress pointer location
-//         once command byte is sent
-//             controller clocks out the data at the adress location (same as READ instruction)
-//         further reduces SPI by clearing the recieve flag (CANINTF.RXnIF) when CS is raised high at the end 
-//     WRITE instruction
-//         what happens
-//             lower CS pin
-//             WRITE instruction is sent to mcp2515
-//             adress is sent
-//             at least one byte of data is sent
-//                 can write sequential register by continuing to clock in databytes (if CS is held low)
-//         written to the register on rising edge og SCK for the D0 bit
-//         if CS i raised high before eight bits is finished sending 
-//             write will be aborted for that and previous bytes
-//     LOAD TX BUFFER instruction
-//         eliminates the adress required by normal WRITE 
-//         eight bit instruction
-//         sets the adress pointer to one of six adresses to quickly write to a transmit buffer that points to the ID or data adress of any of the three transmit buffers
-//     REQUEST TO SEND (RTS) instruction   
-//         initiate messages transmission for one or more transmit buffers
-//         what happens
-//             lower CS pin
-//             RTS command byte is sent
-//                 last 3 bits indicate which transmit buffers are enabled to send
-//             sets TxBnCTRL.TXREQ bit for respective buffers
-//                 any or all of the last three bits can b eset in a single command
-//                 if RTS is sent with nnn = 000, command will be ignored
-//     READ STATUS instruction 
-//         allows single instruction access to some of the often used status bits
-//         what happens    
-//             lower CS pin
-//             Read status command byte is sent to mcp2515
-//             returns eight bits of data that contain status
-//                 if more clocks are sent on SCK, the mcp2515 will conitnue to send the status bits when CS is lowered
-//         each status bit can also be read by the standard read command
-//     RX status instruction
-//         quickly determine which FCLKOUT = System Clock/1filter mathced the message and type (standard. exended, remote)
-//         after command is sent, returns 8 bits of status data
-//         if more clocks on SCK and CS low, continue to send the same status bits
-//     BIT MODIFY 
-//         setting or clearing idividual bits in spesific status and cotnrol registers
-//         not available for all registers
-//         what happens
-//             lower the CS
-//             send BIT MODIFY
-//             send adress of register
-//             send mask byte 
-//                 determines which bits in the register will be allowed to change
-//                 1 allow, 0 not allow
-//                 00110101
-//             send data byte 
-//                 XX10X0X1
-//                 if the register was 01010001
-//                 the bits in the maski will determine which bits in the register will be changed to match the data byte
-//                 => new register = 01[1][0]0[0]0[1] with those inside [] having changed
-        
-
-
-
-// man kan si fra atmega til canctrl    
-//     hva er CANINTF
-//     canctrl skal svaret med CANINTF

@@ -10,8 +10,8 @@ const Menu_item main_items[] = {
 #define MAIN_ITEM_COUNT (sizeof(main_items) / sizeof(main_items[0]))
 
 Menu_item head_items[] = {
-    {"POSISJON", HEAD_MENU},
-    {"FART", HEAD_MENU},
+    {"POSISJON", MAIN_MENU},
+    {"FART", MAIN_MENU},
 };
 Menu_item quit_items[] = {
     {"TILBAKE", MAIN_MENU},
@@ -125,6 +125,20 @@ void menu_state_machine(void){
                 }
                 // action
                 draw_menu(head_items, HEAD_ITEM_COUNT, selector_position);
+                break;
+            case(QUIT_MENU):
+                // trigger
+                if(r4_pressed){
+                    States next = quit_items[selector_position].target;
+                    if(next != menu_state){
+                        menu_state = next;
+                        selector_position = 0;
+                        oled_clear();
+                    }
+                    break;
+                }
+                // action
+                draw_menu(quit_items, QUIT_ITEM_COUNT, selector_position);
                 break;
             
         }
