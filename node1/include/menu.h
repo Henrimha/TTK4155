@@ -3,10 +3,12 @@
 #include "SPI_driver.h"
 #include "oled_driver.h"
 #include "ADC_driver.h"
+#include "utils.h"
 
 typedef enum {
     MAIN_MENU,
     HEAD_MENU,
+    QUIT_MENU
     // SHOULDER_MENU,
     // KNEE_MENU,
     // TOE_MENU

@@ -16,7 +16,7 @@
 void CAN_init(){
     //Need to delay 128 clock cycles 
 
-    //The clock is 16MHz, each bit is 2us, this is the half the limit of the MCP2551 and the SAM3X which has a limit of 1Mb/s
+    //The clock is 84MHz, each bit is , this is the half the limit of the MCP2551 and the SAM3X which has a limit of 1Mb/s
 
     //new CAN init
     mcp2515_bit_modify(MCP_TXRTSCRTL, 0b00000111, 0x00); // Disable requesting message transmission of the T buffers on the pins, they are input pins

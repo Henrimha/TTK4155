@@ -9,6 +9,7 @@
 #include <ADC_driver.h>
 #include <tests/ADC_test.h>
 #include <SPI_driver.h>
+#include "include/menu.h"
 #include "oled_driver.h"
 #include "menu.h"
 #include "tests/joystick_test.h"
@@ -18,7 +19,11 @@
 #include "game.h"
 
 
-
+//ADC sample bruker 320 us
+//UART uses 1ms approx, per byte
+//SPI uses 104.3 us
+//CAN bus is 47 + 8*n bits, up to 25 bit stuffing. 8 us per bit
+//SRAM maybe 0.5us
 
 
 // #define FOSC 1843200// Clock Speed
@@ -60,6 +65,22 @@ int main(void) {
 
     set_sleep_mode(SLEEP_MODE_PWR_SAVE);
 
+
+
+    while(1){
+        menu_state_machine();
+
+        while(1){
+            io_send();
+            if(INT1_FLAG){
+                INT1_FLAG=0;
+                int1_interrupt_routine();
+                printf("Tilbake til State Maskin!!\r\n");
+                break;
+            }
+        }
+    }
+    
     while(1){
         io_send();
         _delay_ms(16);
@@ -107,13 +128,7 @@ int main(void) {
     // while (1){
     //     _delay_us(50);
 
-    //     if(INT1_FLAG){
-    //         int1_interrupt_routine();
-    //         printf("INTT1 ble utløst!!\r\n");
-    //         INT1_FLAG=0;
-    //         CAN_send(8, data);
-
-    //     }
+    //     
     //     sleep_enable();
     //     sleep_cpu();  
     //     sleep_disable();

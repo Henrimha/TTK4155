@@ -2,22 +2,22 @@
 #define LEFT_PADDING 10
 
 const Menu_item main_items[] = {
-    {"HODE", HEAD_MENU},
-    {"SKULDRE", MAIN_MENU},
-    {"KNE", MAIN_MENU},
-    {"TAA", MAIN_MENU},
+    {"START", MAIN_MENU},
+    {"REGULATOR BYTTE", HEAD_MENU},
+    {"QUIT", QUIT_MENU},
     // {"NESE", MAIN_MENU}, // to add an option that does not do anything
 };
 #define MAIN_ITEM_COUNT (sizeof(main_items) / sizeof(main_items[0]))
 
 Menu_item head_items[] = {
-    {"OEYNE", HEAD_MENU},
-    {"OERER", HEAD_MENU},
-    {"KINN", HEAD_MENU},
-    {"TILBAKE", MAIN_MENU}
+    {"POSISJON", HEAD_MENU},
+    {"FART", HEAD_MENU},
+};
+Menu_item quit_items[] = {
+    {"TILBAKE", MAIN_MENU},
 };
 #define HEAD_ITEM_COUNT (sizeof(head_items) / sizeof(head_items[0]))
-
+#define QUIT_ITEM_COUNT (sizeof(quit_items) / sizeof(quit_items[0]))
 
 static void draw_menu(const Menu_item *items, uint8_t count, uint8_t selector){
     for (uint8_t i = 0; i < count; i++){
@@ -100,6 +100,7 @@ void menu_state_machine(void){
                 // trigger
                 if(r4_pressed){
                     States next = main_items[selector_position].target;
+                    if(next==MAIN_MENU){GAMESTATE=1;}
                     if(next != menu_state){
                         menu_state = next;
                         selector_position = 0;
@@ -125,6 +126,9 @@ void menu_state_machine(void){
                 // action
                 draw_menu(head_items, HEAD_ITEM_COUNT, selector_position);
                 break;
+            
         }
-    }
+        if (GAMESTATE){break;};      
+    };
+    return;
 }
