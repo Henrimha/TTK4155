@@ -10,6 +10,4 @@ volatile CanMsg CAN_RX_DATA;
 
 volatile char CT0_FLAG=0;
 
-int PREVIOUS_VALUE=0;
-
-int INTEGRATOR_STATE=0;
+volatile int REF=0;

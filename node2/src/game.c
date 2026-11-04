@@ -67,7 +67,8 @@ void buttons_control(CanMsg *m){
 
 void touch_control(CanMsg *m){
     Touch t = {m->byte[0], m->byte[1]};
-    calculate_thrust(t.X);
+    REF=t.X;
+    calculate_thrust();
 }
 
 // void IR_send(){

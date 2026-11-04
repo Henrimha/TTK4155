@@ -24,6 +24,4 @@ extern volatile CanMsg CAN_RX_DATA;
 
 extern volatile char CT0_FLAG;
 
-extern int PREVIOUS_VALUE;
-
-extern int INTEGRATOR_STATE;
+extern volatile int REF;

@@ -49,10 +49,12 @@ int main()
     solenoid_init();
     timer_init();
     int score=0;
-
+    __enable_irq();   // CMSIS, same as "cpsie i"
+   //__disable_irq();  // mask all (except NMI/HardFault)
+   printf("Lets go");
     while (1){
         if(CAN_FLAG){
-            CAN0_Handler();
+            CAN0_Handler_();
             CAN_FLAG = 0;
         }
 
@@ -70,7 +72,7 @@ int main()
             }
         }
         
-        
+        //calculate_thrust();
         for (int i=0;i<10000;i++){};
         //printf("%d \n\r", REG_TC2_CV0);
     }
