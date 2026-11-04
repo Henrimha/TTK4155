@@ -27,13 +27,13 @@ void calculate_thrust(int ref){
         return;
     }
     int pos = dc_motor_read();
-    double K=10;
-    double Ti=100000000;
-    double Td=0;
+    double K=35;
+    double Ti=200000;
+    double Td=0.02;
 
     int e=ref-pos/40;
     int deriv=(pos-PREVIOUS_VALUE);
-    int result=K*(e-deriv*Td+INTEGRATOR_STATE/60/Ti);
+    int result=K*(e-deriv*Td+INTEGRATOR_STATE/60.0/Ti);
     printf("%d, %d, %d\n\r", result, deriv, INTEGRATOR_STATE/60);
 
     if (result<-1000){
