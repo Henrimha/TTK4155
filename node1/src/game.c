@@ -69,3 +69,19 @@ void io_send(){
     send_buttons(&b);
     send_touch(&t);
 }
+
+CAN_msg1 node2_receive(){
+    char message[14];
+    CAN_msg1 cm1;
+    CAN_read(&message);
+
+    for (int i=0; i<14;i++){
+        cm1[i]=message[i];
+    }
+    return cm1;
+
+}
+
+uint8_t id1 = (cm1.RXB0SIDL>>5);
+uint8_t id2 = (cm1.RXB0SIDH<<3);
+uint8_t id = id1|id2;

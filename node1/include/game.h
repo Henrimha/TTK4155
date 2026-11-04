@@ -24,3 +24,31 @@ void send_buttons(Buttons *btns);
 void send_touch(Touch *t);
 
 void io_send();
+
+typedef struct{
+
+    uint8_t RXB0SIDH;
+    uint8_t RXB0SIDL;
+    uint8_t RXB0EID8;
+    uint8_t RXB0EID0;
+    uint8_t RXB0DLC;
+    union {
+        uint8_t byte[8];
+        Byte8   byte8;
+    };
+    uint8_t CANSTAT;
+
+}CAN_msg1;
+
+
+
+typedef struct CanMsg CanMsg;
+struct CanMsg {
+    uint8_t id;
+    uint8_t length;
+    union {
+        uint8_t     byte[8];
+        uint32_t    dword[2];
+        Byte8       byte8;
+    };    
+};

@@ -4,7 +4,7 @@
 
 // #define MCP_RESET ((1<<7)|(1<<6))
 #define READ ((1<<1)|(1<<0))
-#define MCP_READ_RX_BUFFER (0b10010010)
+#define MCP_READ_RX_BUFFER (0b10010000)
 #define MCP_LOAD_TX_BUFFER ( 0b01000000) //Buffer 0 ink identefier
 #define WRITE (1<<1)
 #define READ_STATUS ((1<<7)|(1<<5))
@@ -37,16 +37,38 @@ void CAN_init(){
 
 }
 
-void CAN_read(char* rData){
-    char data[9]={MCP_READ_RX_BUFFER,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+// void CAN_read(char* rData){
+//     char data[9]={MCP_READ_RX_BUFFER,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
-    SPI_array_transmit(data,CAN_CONTROLLER,9,data);
+//     SPI_array_transmit(data,CAN_CONTROLLER,9,data);
+
+//     for (int i=0; i<8; i++){
+//         rData[i]=data[i+1];
+//     }
+//     return;
+// }
+
+void CAN_read(CanMsg* rData){
+    char data[14]={MCP_READ_RX_BUFFER,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+
+    SPI_array_transmit(data,CAN_CONTROLLER,14,data);
+
+    
+    uint8_t id1 = (data[1] >> 5); // RXB0SIDL
+    uint8_t id2 = (data[0] << 3); // RXB0SIDH
+    uint8_t id = id1|id2;
+    rData->id = id;
+
+    rData->length = data[4] & (0x0f); // RXB0DLC bits 0-4
 
     for (int i=0; i<8; i++){
-        rData[i]=data[i+1];
+        rData->byte[i]=data[i+5];
     }
+
+    
     return;
 }
+
 /*
 void CAN_send(char* rData){
     char data[9];
@@ -170,7 +192,7 @@ void CAN_send_extended(uint16_t identifier, char length, char RTR, char *sData){
                 //     PHSEG1<2:0> set length in TQS of PS1 
                 //     SAM bit control how many timesthe RXCAN pin is sampled 
                 //         1 => three times 
-                    
+            solenoid_shoot        
 //             TXRTSCTRL
 //             Filter registers
 //             Mask registers 

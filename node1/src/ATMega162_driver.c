@@ -31,7 +31,6 @@ void interrrupt_init(){
     MCUCR &= ~(1<<ISC10);
     MCUCR |= (1<<ISC11); // Interrupt on INT0 is low (falling flank)
     GICR |= (1<<INT1); //Enable interrupt for INT1
-    sei();
 
     //make counter/timer 0
     TCCR3A=0; 
@@ -39,7 +38,8 @@ void interrrupt_init(){
     OCR3AH=1; //Ish 60Hz
     OCR3AL=5; //5+255
     ETIMSK|=(1<<OCIE3A); //interrupt on output compare A match
-    
+    sei();
+
 }
 
 //assumes 8 bit data
@@ -103,6 +103,7 @@ void int1_interrupt_routine(){
     if (error_m & 1){
         
         CAN_read(CAN_RX_DATA);
+
         for (int i=0; i<8;i++){
         printf("%c", CAN_RX_DATA[i]);
         }

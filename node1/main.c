@@ -20,6 +20,7 @@
 
 
 
+
 // #define FOSC 1843200// Clock Speed
 #define FOSC 4915200UL// Clock Speed
 
@@ -59,11 +60,25 @@ int main(void) {
 
     set_sleep_mode(SLEEP_MODE_PWR_SAVE);
 
-
-
     while(1){
         io_send();
         _delay_ms(16);
+    }
+
+
+    while(1){
+        if (TC3_FLAG){
+            TC3_FLAG=0;
+            //System routine
+            io_send();
+        }
+        
+        cli();
+
+        sleep_enable();
+        sleep_cpu();  
+        sleep_disable();
+        sei();
     }
     /*
     //CAN test
