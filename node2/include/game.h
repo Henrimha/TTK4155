@@ -5,7 +5,9 @@
 #include "uart.h"
 #include "PWM_driver.h"
 #include <stdbool.h>
+#include "controller.h"
 #include "dcmotor.h"
+#include "utils.h"
 
 
 
@@ -55,5 +57,12 @@ typedef struct __attribute__((packed)) {
     };
 } Buttons;
 
+
+typedef struct{
+    uint8_t X;
+    uint8_t Y;
+}Touch;
+
 void joystick_control(CanMsg *m);
 void buttons_control(CanMsg *m);
+void touch_control(CanMsg *m);

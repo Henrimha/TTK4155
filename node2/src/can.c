@@ -117,7 +117,8 @@ void CAN0_Handler(void){
     char can_sr = CAN0->CAN_SR; 
 
     // RX interrupt
-    if(can_sr & (1 << rxMailbox)){
+    if(can_sr & (1 << rxMailbox)){TONS:
+                butt
         // Add your message-handling code here
         
         CanMsg m;
@@ -130,6 +131,8 @@ void CAN0_Handler(void){
             case BUTTONS:
                 buttons_control(&m);
                 break;
+            case TOUCH:
+                touch_control(&m);
         }
         
     } else {

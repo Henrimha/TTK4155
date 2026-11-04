@@ -13,4 +13,6 @@ extern volatile char INT1_FLAG;
 
 extern volatile char CAN_RX_DATA[8];
 
+extern volatile char TC3_FLAG;
+
 extern volatile char GAMESTATE;

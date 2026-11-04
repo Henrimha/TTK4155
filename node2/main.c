@@ -47,7 +47,7 @@ int main()
     dcmotor_init();
     motor_PWM_init();
     solenoid_init();
-    solenoid_shoot();
+    timer_init();
     int score=0;
 
     while (1){
@@ -57,25 +57,15 @@ int main()
         }
 
 
-        // for (int i=0; i<1000000; i++);
-        // motor_PWM_set(600,1);
-        // for (int i=0; i<1000000; i++);
-        // motor_PWM_set(600,0);
-
         if (ADC_sample()<100){
             score++;
         }
-        // if (score%2){
-        //     dc_motor_reset();
-        // }
-        //printf("motor  %d\n\r", dc_motor_read());
-        // for(int i = 0; i<1000000; i++);
-        //printf("Count = %d.   ",score);
 
-        printf("%d \n\r", REG_TC2_CV0);
+        //printf("%d \n\r", REG_TC2_CV0);
     }
 
     
     
     
 }
+
