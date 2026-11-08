@@ -47,10 +47,12 @@ void solenoid_init(){
     //REG_PIOA_OWER = PIO_PA23; //Can use ODSR to set the line
     REG_PIOA_WPMR=PIO_WPMR_WPKEY(0x50494F) | PIO_WPMR_WPEN;
 };
+volatile uint8_t solenoid_ticks = 0;
 void solenoid_shoot(){
-    REG_PIOA_CODR = PIO_PA23; //set data to ouput 23
-    for (volatile int i=0;i<1000000;i++){};
-    REG_PIOA_SODR = PIO_PA23;
+    if(solenoid_ticks == 0){          // ignore while already firing
+        REG_PIOA_CODR = PIO_PA23;     // pin low = on
+        solenoid_ticks = 8;           // 8 ticks at 120 Hz is about 66 ms
+    }
 
 }
 
@@ -76,3 +78,4 @@ void PWM_set(uint8_t value){
     // printf("  wm_set\n");
 
 }
+

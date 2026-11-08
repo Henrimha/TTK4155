@@ -16,8 +16,6 @@ void joystick_control(CanMsg *m){
 
     //printf("Y = %d     ", j.Y);
     // calculate_thrust(j.Y);
-
-    
 }
 
 

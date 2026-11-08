@@ -13,3 +13,5 @@
 void timer_init();
 
 void calculate_thrust();
+
+void reset_encoder();

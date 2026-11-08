@@ -24,7 +24,7 @@
 int main()
 {
     SystemInit();
-    WDT->WDT_MR=WDT_MR_WDDIS;
+    WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
     CanInit init;
     init.sjw=0; //sjw=1
     init.propag=1; //=2
@@ -34,46 +34,71 @@ int main()
     init.smp=0; //Sample only once
     can_init(init,1); //interrupts enabled
     uart_init(F_CPU, BAUDRATE); //Uart init
-    PWM_init();
-    
 
-    
-    WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
-    //Uncomment after including uart above
-    //uart_init(/*cpufreq*/, /*baud*/);
-    //printf("Hello World\n\r");
+    PWM_init();    
     ADC_init();
-    PWM_set(50);
     dcmotor_init();
     motor_PWM_init();
     solenoid_init();
     timer_init();
-    int score=0;
+
     __enable_irq();   // CMSIS, same as "cpsie i"
    //__disable_irq();  // mask all (except NMI/HardFault)
-   printf("Lets go");
+   printf("Init successfull");
+   //reset_encoder();
+   printf("reset_done");
+    PWM_set(50);
+
     while (1){
-        if(CAN_FLAG){
-            CAN0_Handler_();
-            CAN_FLAG = 0;
-        }
+        
 
         if (CT0_FLAG){
             CT0_FLAG=0;
+            if(JOYSTICK_FLAG){
+                __disable_irq();
+                CanMsg m = JOYSTICK_MSG;
+                JOYSTICK_FLAG = 0;
+                __enable_irq();
+                joystick_control(&m);
+            }
+
+            if(TOUCH_FLAG){
+                __disable_irq();
+                CanMsg m = TOUCH_MSG;
+                TOUCH_FLAG=0;
+                __enable_irq();
+                touch_control(&m);
+
+            }
+            if(BUTTONS_FLAG){
+                __disable_irq();
+                CanMsg m = BUTTONS_MSG;
+                BUTTONS_FLAG=0;
+                __enable_irq();
+                buttons_control(&m);
+
+            }
+            //calculation:
+            __disable_irq();
             calculate_thrust();
             if (ADC_sample()<100){
                 //end game, Can send back
-                CanMsg m;
-                m.id=0;
-                m.length=1;
-                m.byte[0]=1;
+                CanMsg m={0};
+                m.id=0; m.length=1; m.byte[0]=1;
                 can_tx(m);
-                printf("finito");
+                //printf("finito");
+                //reset_encoder();
+            }
+            __enable_irq();
+
+            if(solenoid_ticks){
+                if(--solenoid_ticks == 0){
+                    REG_PIOA_SODR = PIO_PA23;     // pin high = off
+                }
             }
         }
         
         //calculate_thrust();
-        for (int i=0;i<10000;i++){};
         //printf("%d \n\r", REG_TC2_CV0);
     }
 

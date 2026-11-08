@@ -25,3 +25,12 @@ extern volatile CanMsg CAN_RX_DATA;
 extern volatile char CT0_FLAG;
 
 extern volatile int REF;
+
+extern volatile char JOYSTICK_FLAG;
+extern volatile CanMsg JOYSTICK_MSG;
+
+extern volatile char TOUCH_FLAG;
+extern volatile CanMsg TOUCH_MSG;
+
+extern volatile char BUTTONS_FLAG;
+extern volatile CanMsg BUTTONS_MSG;

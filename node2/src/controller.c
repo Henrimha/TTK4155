@@ -19,7 +19,7 @@ void TC0_Handler(void){
 #define DIR_RIGHT 0
 /* Controller parameters (ideal PID form) */
 static const double KP = 20.0;
-static const double TI = 1;          /* effectively no integral action */
+static const double TI = 5.0;          /* effectively no integral action */
 static const double TD = 0.0;
 
 static int    prev_pos   = 0;
@@ -27,7 +27,7 @@ static double integrator = 0.0;
 static int check=0;
 void calculate_thrust(){
    check++;
-    if(!(check%1000)){printf("%d\r\n",REF);}
+    //if(!(check%1000)){printf("%d\r\n",REF);}
     if (REF < REF_MIN || REF > REF_MAX) {
         return;
     }
@@ -69,4 +69,10 @@ void timer_init(){
     REG_TC0_CCR0=TC_CCR_SWTRG|TC_CCR_CLKEN; //Enable timer and start, timer 0 channel 0
     REG_TC0_WPMR = TC_WPMR_WPKEY(0x54494D)|RTC_WPMR_WPEN; //add write protection
     prev_pos=REG_TC2_CV0;
+}
+
+void reset_encoder(){
+    motor_PWM_set(800,0);
+    for (int i=0;i<300000000;i++){    };
+    dc_motor_reset();
 }

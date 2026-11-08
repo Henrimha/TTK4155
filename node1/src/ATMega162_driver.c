@@ -28,8 +28,7 @@ void USART_Init( unsigned int ubrr )
 void interrrupt_init(){
     //Interrupt setup
     DDRD &= ~(1<<PD3);  // PD3/INT1 as input
-    MCUCR &= ~(1<<ISC10);
-    MCUCR |= (1<<ISC11); // Interrupt on INT0 is low (falling flank)
+    MCUCR &= ~((1<<ISC11) | (1<<ISC10));   // INT1 on low level// Interrupt on INT0 is low (falling flank)
     GICR |= (1<<INT1); //Enable interrupt for INT1
 
     //make counter/timer 0
@@ -99,22 +98,22 @@ ISR(INT1_vect){
 
 void int1_interrupt_routine(){
     char error_m=mcp2515_read(MCP_CANINTF);
-    printf("CANINTF = 0x%02X\r\n", error_m);
+    //printf("CANINTF = 0x%02X\r\n", error_m);
     if (error_m & 1){
         CAN_read(&CAN_RX_DATA);
 
-        for (int i=0; i<8;i++){
-        printf("%c", CAN_RX_DATA.byte[i]);
-        }
-        printf("\n\r");
+        // for (int i=0; i<8;i++){
+        // printf("%c", CAN_RX_DATA.byte[i]);
+        // }
+        // printf("\n\r");
 
-        oled_goto_page_column(7, 0);
-        printf("%d", CAN_RX_DATA.byte[0]);
+        // oled_goto_page_column(7, 0);
+        // printf("%d", CAN_RX_DATA.byte[0]);
         
     }
 
-    GICR |= (1<<INT1);
-       mcp2515_bit_modify(MCP_CANINTF, 0xFF, 0x00);
+    // GICR |= (1<<INT1);
+    //    mcp2515_bit_modify(MCP_CANINTF, 0xFF, 0x00);
     return;
 }
 

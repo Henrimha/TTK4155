@@ -63,34 +63,43 @@ int main(void) {
 
 
 
-    set_sleep_mode(SLEEP_MODE_PWR_SAVE);
+    //set_sleep_mode(SLEEP_MODE_PWR_SAVE);
 
 
     int fet=0;
     while(1){
+        fet=0;
         menu_state_machine();
         GAMESTATE=0;
         oled_clear();
+            // drop anything stale from the previous game
+        mcp2515_bit_modify(MCP_CANINTF, 0xFF, 0x00);
+        INT1_FLAG = 0;
+        GIFR = (1<<INTF1);
+        GICR |= (1<<INT1);
         while(1){
             if(INT1_FLAG){
+                cli();
                 INT1_FLAG=0;
                 int1_interrupt_routine();
-                printf("Tilbake til State Maskin!!\r\n");
+                sei();
+                //printf("Tilbake til State Maskin!!\r\n");
                 break;
             }
             if (TC3_FLAG){
+                cli();
                 TC3_FLAG=0;
                 io_send();
 
                 fet++;
-                if (!(fet%100)){
+                if (!(fet%30)){
                     char y[5];
                     itoa(fet/30, y, 10);
                     oled_goto_page_column(7,0);
                     oled_print(y);
                     oled_print("    ");
                 }
-                
+                sei();
                 //System routine
             }
         }

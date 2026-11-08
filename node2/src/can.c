@@ -86,9 +86,9 @@ void can_tx(CanMsg m){
         
     // Set message length and mailbox ready to send
     CAN0->CAN_MB[txMailbox].CAN_MCR = (m.length << CAN_MCR_MDLC_Pos) | CAN_MCR_MTCR;
-    printf("sent");
+    //printf("sent");
     //for (volatile int i = 0; i < 100000; i++);
-    printf("SR:%08lX ECR:%08lX MSR:%08lX\n\r", CAN0->CAN_SR, CAN0->CAN_ECR, CAN0->CAN_MB[0].CAN_MSR);
+    //printf("SR:%08lX ECR:%08lX MSR:%08lX\n\r", CAN0->CAN_SR, CAN0->CAN_ECR, CAN0->CAN_MB[0].CAN_MSR);
 }
 
 uint8_t can_rx(CanMsg* m){
@@ -116,7 +116,7 @@ uint8_t can_rx(CanMsg* m){
     
 
 // Example CAN interrupt handler
-void CAN0_Handler_(void){
+void CAN0_Handler(void){
     char can_sr = CAN0->CAN_SR; 
 
     // RX interrupt
@@ -128,18 +128,22 @@ void CAN0_Handler_(void){
         MsgID id = m.id;
         switch(id){
             case JOYSTICK:
-                joystick_control(&m);
+                JOYSTICK_FLAG=1;
+                JOYSTICK_MSG=m;
                 break;
             case BUTTONS:
-                buttons_control(&m);
+                BUTTONS_FLAG=1;
+                BUTTONS_MSG=m;
                 break;
             case TOUCH:
-                touch_control(&m);
+                TOUCH_FLAG=1;
+                TOUCH_MSG=m;
                 break;
         }
         
     } else {
-        printf("CAN0 message arrived in non-used mailbox\n\r");
+        //printf("CAN0 message arrived in non-used mailbox\n\r");
+        //Ingen printf i ISR
     }
     
     if(can_sr & CAN_SR_MB0){
@@ -150,6 +154,7 @@ void CAN0_Handler_(void){
     NVIC_ClearPendingIRQ(ID_CAN0);
 } 
 
-void CAN0_Handler(void){
-    CAN_FLAG = 1;
-}
+// void CAN0_Handler(void){
+//     CAN_FLAG = 1;
+//     NVIC_ClearPendingIRQ(ID_CAN0);
+// }
