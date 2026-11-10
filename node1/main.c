@@ -49,7 +49,7 @@ int main(void) {
     
      //Fjerner interrupts???
     // ADC_test();
-    // SRAM_test();
+    SRAM_test();
     // oled_print("SuG BalLE og pikk");
     // joystick_test();
     // buttons_test();

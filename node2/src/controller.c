@@ -10,16 +10,16 @@ void TC0_Handler(void){
 
 //State between 0 and 4000
 #define REF_MIN 0 // ref units; keeps the target away from the end stops 
-#define REF_MAX 110
+#define REF_MAX 120
 #define COUNTS_PER_UNIT 40.0  // encoder counts per ref unit 
 #define TS (1.0 / 120.0) // sample time [s] 
 #define OUT_MAX 800
 
 #define DIR_LEFT 1
 #define DIR_RIGHT 0
-/* Controller parameters (ideal PID form) */
+
 static const double KP = 20.0;
-static const double TI = 5.0;          /* effectively no integral action */
+static const double TI = 5.0;          
 static const double TD = 0.0;
 
 static int    prev_pos   = 0;
@@ -32,14 +32,15 @@ void calculate_thrust(){
         return;
     }
 
+
     int pos = dc_motor_read();
-    double error = REF - pos / COUNTS_PER_UNIT;
+    double error = REF*1.2 - pos / COUNTS_PER_UNIT;
     double velocity = (pos - prev_pos) / COUNTS_PER_UNIT / TS; 
     prev_pos = pos;
     double u = KP * (error - TD * velocity + integrator / TI);
 
     if(u > OUT_MAX){
-        u = OUT_MAX;                   /* saturated: freeze integrator */
+        u = OUT_MAX;                   
     }
     else if(u < -OUT_MAX){
         u = -OUT_MAX;
