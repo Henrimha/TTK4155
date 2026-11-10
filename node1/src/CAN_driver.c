@@ -3,11 +3,11 @@
 #include "mcp2515_driver.h"
 
 // #define MCP_RESET ((1<<7)|(1<<6))
-#define READ ((1<<1)|(1<<0))
+#define READ ((1<<1) | (1<<0))
 #define MCP_READ_RX_BUFFER (0b10010000)
 #define MCP_LOAD_TX_BUFFER ( 0b01000000) //Buffer 0 ink identefier
 #define WRITE (1<<1)
-#define READ_STATUS ((1<<7)|(1<<5))
+#define READ_STATUS ((1<<7) | (1<<5))
 // #define RX_STATUS (0b10110000)
 #define BIT_MODIFY (0b00000101)
 #define CANCTRL (0b00001111)
@@ -38,7 +38,7 @@ void CAN_init(){
 }
 
 void CAN_read(CanMsg* rData){
-    char data[14]={MCP_READ_RX_BUFFER,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+    char data[14] = {MCP_READ_RX_BUFFER,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
     SPI_array_transmit(data,CAN_CONTROLLER,14,data);
 
@@ -50,8 +50,8 @@ void CAN_read(CanMsg* rData){
 
     rData->length = data[4] & (0x0f); // RXB0DLC bits 0-4
 
-    for (int i=0; i<8; i++){
-        rData->byte[i]=data[i+5];
+    for (int i = 0; i < 8; i++){
+        rData->byte[i] = data[i+5];
     }
 
     
@@ -81,8 +81,8 @@ void CAN_send_extended(uint16_t identifier, char length, char RTR, char *sData){
     if (RTR){data[5] |= 1<<6;} 
     
   
-    for (int i=0; i<length; i++){
-        data[6+i]=sData[i];
+    for (int i = 0; i < length; i++){
+        data[6+i] = sData[i];
     }
 
     SPI_array_send (data, CAN_CONTROLLER, (6+length));

@@ -2,15 +2,15 @@
 #include <stdio.h>
 
 void ADC_init(){
-    TCCR1B |=(1<<CS10)|(0<<CS11)|(0<<CS12); //No prescaling
-    TCCR1B |=(0<<WGM13)|(1<<WGM12);//CTC OCR1A
-    TCCR1A |=(0<<WGM11)|(0<<WGM10); //CTC OCR1A
+    TCCR1B |= (1<<CS10) | (0<<CS11) | (0<<CS12); //No prescaling
+    TCCR1B |= (0<<WGM13) | (1<<WGM12); //CTC OCR1A
+    TCCR1A |= (0<<WGM11) | (0<<WGM10); //CTC OCR1A
     TCCR1A |= (1<<COM1A0); //Set compare bit to toggle mode
-    DDRD |=(1<<PD5); //Set pin D5 to be oupt
+    DDRD |= (1<<PD5); //Set pin D5 to be oupt
     //DDR_OC1A=1; //OCnA value is visble on external pin D5
-    OCR1A =10; //Maximum value
+    OCR1A = 10; //Maximum value
 
-    DDRD &=~(1<<PD4);
+    DDRD &= ~(1<<PD4);
 }
 
 uint8_t scale_axis(uint8_t raw, uint8_t min){
@@ -23,16 +23,16 @@ uint8_t scale_axis(uint8_t raw, uint8_t min){
 
 // 200 mikrosekunder
 Sample ADC_sample(){
-    volatile uint8_t *ADC=(uint8_t*)0x1000;
-    ADC[0]=1;
+    volatile uint8_t *ADC = (uint8_t*)0x1000;
+    ADC[0] = 1;
     while(PIND & (1<<PD4));
     volatile Sample value;
     value.joystick_x = scale_axis(ADC[0], 66);
     value.joystick_y = scale_axis(ADC[0], 69);
-    value.touch_x = ADC[0]/2.55;
-    value.touch_y = ADC[0]/2.55;
+    value.touch_x = ADC[0] / 2.55;
+    value.touch_y = ADC[0] / 2.55;
 
 
     return value;
 
-} //TODO: interrupt routine?
+}

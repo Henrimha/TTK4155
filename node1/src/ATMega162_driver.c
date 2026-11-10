@@ -13,15 +13,7 @@ void USART_Init( unsigned int ubrr )
     /* Enable receiver and transmitter */
     UCSR0B = (1<<RXEN0)|(1<<TXEN0);
     /* Set frame format: 8data, 2stop bit */
-    UCSR0C = (1<<URSEL0)|(0<<UMSEL0)|(1<<USBS0)|(1<<UPM01)|(0<<UPM00)|(1<<USBS0)|(3<<UCSZ00); // Akksesser UCSRC registeret. Velger asynkront, even parity. 2 stop bit.  8-bit character size. 
-
-    /*
-    Finne f_osc pga UBRR0H 
-    U2X = 1 eller 0?? bleeleel
-    Sette riktig baud rate (9600) 
-    Sett inn riktig UBRR0H og UBRR0L
-    */
-    
+    UCSR0C = (1<<URSEL0)|(0<<UMSEL0)|(1<<USBS0)|(1<<UPM01)|(0<<UPM00)|(1<<USBS0)|(3<<UCSZ00); // Akksesser UCSRC registeret. Velger asynkront, even parity. 2 stop bit.  8-bit character size.     
 
 } //copied from ATmega162 datasheet, page 172
 
@@ -32,11 +24,11 @@ void interrrupt_init(){
     GICR |= (1<<INT1); //Enable interrupt for INT1
 
     //make counter/timer 0
-    TCCR3A=0; 
-    TCCR3B=(1<<CS32)|(1<<CS30)|(1<<WGM32);//Prescaler is 1024, CTC clear timer on compare
-    OCR3AH=1; //Ish 60Hz
-    OCR3AL=5; //5+255
-    ETIMSK|=(1<<OCIE3A); //interrupt on output compare A match
+    TCCR3A = 0; 
+    TCCR3B = (1<<CS32)|(1<<CS30)|(1<<WGM32);//Prescaler is 1024, CTC clear timer on compare
+    OCR3AH = 1; //Ish 60Hz
+    OCR3AL = 5; //5+255
+    ETIMSK |= (1<<OCIE3A); //interrupt on output compare A match
     sei();
 
 }
@@ -50,9 +42,6 @@ while ( !( UCSR0A & (1<<UDRE0)) ); // stopper når begge er høye
 UDR0 = data;
 } //kopert fra ATmega162 datasheet s 173
 
-
-//Documentation
-//TODO: can use UDRE, Usart data register empty and TXC transmit complete to generate interrupts
 
 unsigned char USART_Receive()
 {
@@ -79,32 +68,20 @@ int USART_get(FILE *stream){
 }
 
 ISR(INT1_vect){
-    INT1_FLAG=1;
+    INT1_FLAG = 1;
     GICR &= ~(1<<INT1);
 }
 
 void int1_interrupt_routine(){
-    char error_m=mcp2515_read(MCP_CANINTF);
+    char error_m = mcp2515_read(MCP_CANINTF);
     //printf("CANINTF = 0x%02X\r\n", error_m);
     if (error_m & 1){
         CAN_read(&CAN_RX_DATA);
-
-        // for (int i=0; i<8;i++){
-        // printf("%c", CAN_RX_DATA.byte[i]);
-        // }
-        // printf("\n\r");
-
-        // oled_goto_page_column(7, 0);
-        // printf("%d", CAN_RX_DATA.byte[0]);
-        
     }
-
-    // GICR |= (1<<INT1);
-    //    mcp2515_bit_modify(MCP_CANINTF, 0xFF, 0x00);
     return;
 }
 
 ISR(TIMER3_COMPA_vect){
-    TC3_FLAG=1;
+    TC3_FLAG = 1;
     return; //Interrurpt flag is automatily cleared when ISR routine is run
 }
