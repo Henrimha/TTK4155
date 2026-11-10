@@ -1,3 +1,4 @@
+#pragma once
 #include "MCP2515.h"
 #include "utils.h"
 

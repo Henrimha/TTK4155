@@ -50,20 +50,7 @@ while ( !( UCSR0A & (1<<UDRE0)) ); // stopper når begge er høye
 UDR0 = data;
 } //kopert fra ATmega162 datasheet s 173
 
-/*
-sett inn i txd-registeret
-indikere at reigisteret er fullt
-vente mens vi sender
-når sendt indikere at registeret er tomt
-klar til nye sendinger
 
-to flagg for tilstand, UDRE og TXC
-UDRE: indikerer om bufferet er klart for å motta data
-bittet settes når transmitregistert er tomt (1 = tomt/klar, 0 = fullt)
-alltid skriv til 0 når man bruker UCSRA-registeret
-TXC: er en bit i UCSR0A-registeret
-
-*/
 //Documentation
 //TODO: can use UDRE, Usart data register empty and TXC transmit complete to generate interrupts
 

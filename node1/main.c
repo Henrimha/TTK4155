@@ -31,12 +31,7 @@
 
 #define BAUD 9600
 #define MYUBRR FOSC/16/BAUD-1
-// volatile uint8_t can_interrupt_flag = 0;
 
-// ISR(INT1_vect)
-// {
-//     can_interrupt_flag = 1;
-// }
 
 
 int main(void) {
@@ -106,56 +101,8 @@ int main(void) {
         oled_clear();
     }
     
-    // while(1){
-    //     io_send();
-    //     _delay_ms(16);
-    // }
-
-
-    // while(1){
-    //     
-        
-    //     cli();
-
-    //     sleep_enable();
-    //     sleep_cpu();  
-    //     sleep_disable();
-    //     sei();
-    // }
-    /*
-    //CAN test
-    while (1){
-        char data[9] = "Morten T";
-        CAN_send(8, data);
-        // int i=0;
-        // while (PIND & (1<<PD3)){i++;};
-        // CAN_read(data);
-        // printf("%s",data);
-        _delay_us(1000);
-
-
-        char data1[9] = "Henrik H";
-        CAN_send(8, data1);
-        // i=0;
-        // while (PIND & (1<<PD3)){i++;};
-        // CAN_read(data1);
-        // printf("%s",data1);
-
-        _delay_ms(2000);
-    }*/
-
-    // char data[9] = "MartinTo";
-    // CAN_send(8, data);
-    // while (1){
-    //     _delay_us(50);
-
-    //     
-    //     sleep_enable();
-    //     sleep_cpu();  
-    //     sleep_disable();
-    //     printf("vaaa ble utløst!!\r\n");
-
-    // }
+   
+   
     
     return 0;
 }

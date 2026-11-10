@@ -90,7 +90,6 @@ uint8_t can_rx(CanMsg* m);
 // Print a CAN message (using `printf`)
 void can_printmsg(CanMsg m);
 
-//void CAN0_Handler_();
 
 
 

@@ -154,7 +154,4 @@ void CAN0_Handler(void){
     NVIC_ClearPendingIRQ(ID_CAN0);
 } 
 
-// void CAN0_Handler(void){
-//     CAN_FLAG = 1;
-//     NVIC_ClearPendingIRQ(ID_CAN0);
-// }
+
