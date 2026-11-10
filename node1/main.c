@@ -92,7 +92,7 @@ int main(void) {
                     itoa(fet/30, y, 10);
                     oled_goto_page_column(7,0);
                     oled_print(y);
-                    oled_print("    ");
+                    oled_print("  ");
                 }
                 sei();
                 //System routine

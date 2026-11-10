@@ -21,3 +21,4 @@ void solenoid_shoot();
 void PWM_set(uint8_t value);
 
 extern volatile uint8_t solenoid_ticks;
+extern volatile uint8_t solenoid_cooldown;

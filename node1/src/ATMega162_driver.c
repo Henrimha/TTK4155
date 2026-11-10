@@ -83,5 +83,5 @@ void int1_interrupt_routine(){
 
 ISR(TIMER3_COMPA_vect){
     TC3_FLAG = 1;
-    return; //Interrurpt flag is automatily cleared when ISR routine is run
+    return; //Interrupt flag is automatily cleared when ISR routine is run
 }

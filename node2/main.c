@@ -96,6 +96,9 @@ int main()
                     REG_PIOA_SODR = PIO_PA23;     // pin high = off
                 }
             }
+            else if(solenoid_cooldown){
+                solenoid_cooldown--;
+            }
         }
         
         //calculate_thrust();

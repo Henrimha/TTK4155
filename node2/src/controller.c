@@ -19,7 +19,7 @@ void TC0_Handler(void){
 #define DIR_RIGHT 0
 
 static const double KP = 20.0;
-static const double TI = 5.0;          
+static const double TI = 20.0;          
 static const double TD = 0.0;
 
 static int    prev_pos   = 0;
