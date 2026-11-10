@@ -86,7 +86,7 @@ void oled_print(char text[]){
 
 void oled_clear(){
     oled_home();
-    for (int i=0;i<8*128;i++){
+    for (int i = 0; i < 8*128; i++){
         oled_data(0x00);
     }
 }

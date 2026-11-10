@@ -7,7 +7,7 @@ static void SPI_CAN_mode();
 void SPI_Init(void)
 {
 //Set the SS pin to be output pin
-DDRB|=(1<<PB4)|(1<<PB7)|(1<<PB5)|(1<<PB3)|(1<<PB2); //Buttons CS, SCK, MOSI, D/C#, MCP2515 CS: are output
+DDRB |= (1<<PB4)|(1<<PB7)|(1<<PB5)|(1<<PB3)|(1<<PB2); //Buttons CS, SCK, MOSI, D/C#, MCP2515 CS: are output
 
 // Interrupt disabled (0), Enable SPI, MSB first, Master, clock polarity, clock phase, set clock rate fck/2
 //SCK is high when idle (leading edge is falling, trailing is rising),
@@ -15,9 +15,9 @@ DDRB|=(1<<PB4)|(1<<PB7)|(1<<PB5)|(1<<PB3)|(1<<PB2); //Buttons CS, SCK, MOSI, D/C
 SPCR = (0<<SPIE)|(1<<SPE)|(0<<DORD)|(1<<MSTR)|(1<<CPOL)|(0<<CPHA)|(1<<SPR1)|(0<<SPR0);
 SPSR |= (1<<SPI2X);
 DDRB &= ~(1<<PB6); //MISO: Set input
-PORTB|=(1<<PB4)|(1<<PB2); //set high, becuse active low
-DDRD|=(1<<PD2); //OLED CS is output
-PORTD|=(1<<PD2); //Set high, because active low
+PORTB |= (1<<PB4)|(1<<PB2); //set high, becuse active low
+DDRD |= (1<<PD2); //OLED CS is output
+PORTD |= (1<<PD2); //Set high, because active low
 
 
 }
@@ -38,7 +38,7 @@ char oled_transmit(char data, int command){
         PORTB &= ~(1<<PB3);
     }
     else {
-        PORTB |=(1<<PB3);
+        PORTB |= (1<<PB3);
     }
     
     return SPI_transmit(data, OLED_SCREEN);
@@ -68,18 +68,18 @@ char SPI_transmit(char cData, Slaves slave){
             SPI_CAN_mode();
             PORTB &= ~(1<<PB2);
             send(cData);
-            PORTB |=(1<<PB2);
+            PORTB |= (1<<PB2);
             break;
     }
     return SPDR;
 }
 
 static void send_m(char* sData, size_t len, char* rData){
-        for (size_t i=0;i<len;i++){
+        for (size_t i = 0; i < len; i++){
             SPDR = sData[i];
             while(!(SPSR & (1 << SPIF)));
-            if (rData!=0){
-                rData[i]=SPDR;
+            if (rData != 0){
+                rData[i] = SPDR;
             }
         } 
     }
@@ -98,14 +98,14 @@ void SPI_array_transmit(char* sData, Slaves slave, size_t len, char* rData){
             SPI_IO_mode();
             PORTD &= ~(1 << PD2);
             send_m(sData, len, rData);
-            PORTD |= (1<<PD2);
+            PORTD |= (1 << PD2);
             break;
         
         case(CAN_CONTROLLER):
             SPI_CAN_mode();
-            PORTB &= ~(1<<PB2);
+            PORTB &= ~(1 << PB2);
             send_m(sData, len, rData);
-            PORTB |=(1<<PB2);
+            PORTB |= (1 << PB2);
             break;
     }
     return;
@@ -113,17 +113,17 @@ void SPI_array_transmit(char* sData, Slaves slave, size_t len, char* rData){
 
 
 static void SPI_IO_mode(){
-    SPCR |=(1<<CPOL);
+    SPCR |= (1 << CPOL);
     
 }
 static void SPI_CAN_mode(){
-    SPCR &= ~(1<<CPOL);
+    SPCR &= ~(1 << CPOL);
 }
 
 Buttons Buttons_read(void){
     Buttons result;
     SPI_IO_mode();
-    PORTB &= ~(1<<PB4);
+    PORTB &= ~(1 << PB4);
     SPI_shout(0x04);
     _delay_us(40);
     result.right = SPI_shout(0x00);
@@ -131,7 +131,7 @@ Buttons Buttons_read(void){
     result.left = SPI_shout(0x00);
     _delay_us(2);
     result.nav = SPI_shout(0x00);
-    PORTB |= (1<<PB4);
+    PORTB |= (1 << PB4);
 
     return result;
 
@@ -151,7 +151,7 @@ void LED_PWM(int LED_N, uint8_t width){
 
 Joystick joystick_read (void){
     Joystick joystick;
-    PORTB &= ~(1<<PB4);
+    PORTB &= ~(1 << PB4);
     SPI_shout(0x03);
     _delay_us(80);
     joystick.X = SPI_shout(0x00);
@@ -159,16 +159,16 @@ Joystick joystick_read (void){
     joystick.Y = SPI_shout(0x00);
     _delay_us(15);
     joystick.btn = SPI_shout(0x00);
-    PORTB |= (1<<PB4);
+    PORTB |= (1 << PB4);
 
     return joystick;
 }
 
 Joystick joystick_read_scale (void){
     Joystick joystick = joystick_read();
-    volatile uint8_t *ADC=(uint8_t*)0x1000;
+    volatile uint8_t *ADC = (uint8_t*)0x1000;
 
-    ADC[0]=1;
+    ADC[0] = 1;
     Joystick joystick_new;
     joystick_new.X = scale_axis(ADC[0], 66);
     joystick_new.Y = scale_axis(ADC[0], 69);
